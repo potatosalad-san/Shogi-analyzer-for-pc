@@ -1,6 +1,9 @@
-const {app,BrowserWindow,ipcMain,dialog}=require('electron');
+const {app,BrowserWindow,ipcMain,dialog,shell}=require('electron');
+const http=require('http');
 const {spawn}=require('child_process');const fs=require('fs'),path=require('path'),crypto=require('crypto');
-const SITE='https://potatosalad-san.github.io/Shogi-analyzer-for-pc/'; // ← 自分のGitHub PagesのURLに合わせる
+// ▼ Google Cloud コンソールで作成した「デスクトップ アプリ」の OAuth クライアント（ログイン用）
+const G_CLIENT_ID='YOUR_DESKTOP_CLIENT_ID.apps.googleusercontent.com',G_CLIENT_SECRET='YOUR_DESKTOP_CLIENT_SECRET';
+const SITE='https://potatosalad-san.github.io/Shogi-Analyzer/'; // ← 自分のGitHub PagesのURLに合わせる
 const cfg=()=>path.join(app.getPath('userData'),'engine.json');
 function rd(){let c={};try{c=JSON.parse(fs.readFileSync(cfg(),'utf8'))}catch(e){}
   if(!c.engines)c.engines=c.path?[{id:crypto.randomUUID(),name:path.basename(c.path).replace(/\.exe$/i,''),path:c.path}]:[];
@@ -12,6 +15,8 @@ const pub=c=>({engines:c.engines.map(e=>({id:e.id,name:e.name})),active:c.active
 function createWindow(){
   win=new BrowserWindow({width:1280,height:860,webPreferences:{preload:path.join(__dirname,'preload.js'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
   win.webContents.setUserAgent(win.webContents.getUserAgent().replace(/ Electron\/[\d.]+/,'').replace(/ shogi-?analyzer\/[\d.]+/i,''));
+  win.webContents.on('will-navigate',(ev,url)=>{if(!url.startsWith(SITE)){ev.preventDefault();shell.openExternal(url)}});
+  win.webContents.setWindowOpenHandler(({url})=>{shell.openExternal(url);return{action:'deny'}});
   win.setMenuBarVisibility(false);win.loadURL(SITE);
 }
 ipcMain.handle('eng:list',e=>ok(e)?pub(rd()):{engines:[],active:null});
@@ -34,5 +39,25 @@ ipcMain.handle('eng:start',async e=>{if(!ok(e))return{ok:false,error:'権限が�
   p.on('error',err=>send('info string spawn error '+err.message));
   return{ok:true,path:x.path,id:x.id,name:x.name}});
 ipcMain.on('eng:send',(e,t)=>{if(ok(e)&&proc&&typeof t==='string')proc.stdin.write(t+'\n')});
+const b64u=b=>b.toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+// Googleログイン: 既定のブラウザで認証し、ループバック(127.0.0.1)で認可コードを受け取る（PKCE）
+ipcMain.handle('auth:google',e=>{if(!ok(e))return{ok:false,error:'権限がありません'};
+  if(G_CLIENT_ID.startsWith('YOUR'))return{ok:false,error:'main.js の G_CLIENT_ID / G_CLIENT_SECRET が未設定です'};
+  return new Promise(resolve=>{
+    const ver=b64u(crypto.randomBytes(32)),chal=b64u(crypto.createHash('sha256').update(ver).digest()),state=b64u(crypto.randomBytes(16));
+    let done=false;const fin=r=>{if(done)return;done=true;clearTimeout(tm);srv.close();resolve(r)};
+    const srv=http.createServer(async(req,res)=>{const u=new URL(req.url,'http://127.0.0.1');if(u.pathname!=='/'){res.writeHead(404).end();return}
+      const code=u.searchParams.get('code'),err=u.searchParams.get('error');
+      res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
+      res.end('<meta charset="utf-8"><body style="font-family:sans-serif;padding:2em"><h2>'+(code?'ログインしました':'ログインできませんでした')+'</h2><p>このタブを閉じて、アプリに戻ってください。</p>');
+      if(u.searchParams.get('state')!==state||!code)return fin({ok:false,error:err||'認可コードを受け取れませんでした'});
+      try{const r=await fetch('https://oauth2.googleapis.com/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body:new URLSearchParams({code,client_id:G_CLIENT_ID,client_secret:G_CLIENT_SECRET,code_verifier:ver,grant_type:'authorization_code',redirect_uri:'http://127.0.0.1:'+srv.address().port})});
+        const j=await r.json();if(!j.id_token)return fin({ok:false,error:j.error_description||j.error||'トークン取得に失敗しました'});
+        fin({ok:true,idToken:j.id_token,accessToken:j.access_token})}catch(x){fin({ok:false,error:x.message})}});
+    const tm=setTimeout(()=>fin({ok:false,error:'タイムアウト（3分）'}),180000);
+    srv.listen(0,'127.0.0.1',()=>{shell.openExternal('https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:G_CLIENT_ID,redirect_uri:'http://127.0.0.1:'+srv.address().port,response_type:'code',scope:'openid email profile',code_challenge:chal,code_challenge_method:'S256',state,prompt:'select_account'}))});
+  })});
 app.whenReady().then(createWindow);
 app.on('window-all-closed',()=>{if(proc)proc.kill();app.quit()});
+ 
