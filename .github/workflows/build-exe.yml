@@ -1,0 +1,19 @@
+name: build-exe
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npx electron-builder --win portable --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ShogiAnalyzer-exe
+          path: desktop/dist/*.exe
