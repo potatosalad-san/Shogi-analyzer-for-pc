@@ -1,0 +1,33 @@
+name: fetch-engine
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "npm package (halfkp = 水匠5内蔵 / halfkp.noeval = 評価関数なし)"
+        default: "@mizarjp/yaneuraou.halfkp"
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Download engine
+        run: |
+          mkdir -p /tmp/e && cd /tmp/e && npm init -y > /dev/null
+          npm install "${{ inputs.package }}"
+          cd "$GITHUB_WORKSPACE"
+          rm -rf engine && mkdir -p engine
+          cp -r "/tmp/e/node_modules/${{ inputs.package }}/lib/." engine/
+          cp "/tmp/e/node_modules/${{ inputs.package }}/package.json" engine/package.json
+          ls -la engine
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add engine
+          git commit -m "Add engine" || echo "no changes"
+          git push
