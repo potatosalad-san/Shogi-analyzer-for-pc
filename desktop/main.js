@@ -1,6 +1,6 @@
 const {app,BrowserWindow,ipcMain,dialog}=require('electron');
 const {spawn}=require('child_process');const fs=require('fs'),path=require('path'),crypto=require('crypto');
-const SITE='https://potatosalad-san.github.io/Shogi-Analyzer/'; // ← 自分のGitHub PagesのURLに合わせる
+const SITE='https://potatosalad-san.github.io/Shogi-analyzer-for-pc/'; // ← 自分のGitHub PagesのURLに合わせる
 const cfg=()=>path.join(app.getPath('userData'),'engine.json');
 function rd(){let c={};try{c=JSON.parse(fs.readFileSync(cfg(),'utf8'))}catch(e){}
   if(!c.engines)c.engines=c.path?[{id:crypto.randomUUID(),name:path.basename(c.path).replace(/\.exe$/i,''),path:c.path}]:[];
