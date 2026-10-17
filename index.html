@@ -371,8 +371,14 @@ render();sync();
 </script>
 <script type="module">
 // ▼▼ Firebaseコンソール「プロジェクトの設定 > マイアプリ(ウェブ)」の値を貼り付け ▼▼
-const GOOGLE_CLIENT_ID="YOUR_WEB_CLIENT_ID.apps.googleusercontent.com"; // Firebase > Authentication > Google > Web SDK設定 の「ウェブ クライアント ID」
-const firebaseConfig={apiKey:"YOUR_API_KEY",authDomain:"YOUR_PROJECT.firebaseapp.com",projectId:"YOUR_PROJECT_ID",appId:"YOUR_APP_ID"};
+apiKey: "AIzaSyBT63c41WkcbtK7Tl0IhEyBrTregWrAgYQ",
+  authDomain: "shogi-analyzer-b8b76.firebaseapp.com",
+  projectId: "shogi-analyzer-b8b76",
+  storageBucket: "shogi-analyzer-b8b76.firebasestorage.app",
+  messagingSenderId: "1010314509906",
+  appId: "1:1010314509906:web:0bff2e828752159ed2a98b",
+  measurementId: "G-Q321D1Q91E"
+};
 // ▲▲▲
 if(!firebaseConfig.apiKey.startsWith('YOUR')){
 const V='10.14.1',B='https://www.gstatic.com/firebasejs/'+V+'/';
