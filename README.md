@@ -1,1 +1,0 @@
-# Shogi-analyzer-for-pc
