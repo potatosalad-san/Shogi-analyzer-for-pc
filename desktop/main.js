@@ -2,8 +2,8 @@ const {app,BrowserWindow,ipcMain,dialog,shell}=require('electron');
 const http=require('http');
 const {spawn}=require('child_process');const fs=require('fs'),path=require('path'),crypto=require('crypto');
 // ▼ Google Cloud コンソールで作成した「デスクトップ アプリ」の OAuth クライアント（ログイン用）
-const G_CLIENT_ID='YOUR_DESKTOP_CLIENT_ID.apps.googleusercontent.com',G_CLIENT_SECRET='YOUR_DESKTOP_CLIENT_SECRET';
-const SITE='https://potatosalad-san.github.io/Shogi-Analyzer/'; // ← 自分のGitHub PagesのURLに合わせる
+const G_CLIENT_ID='1010314509906-23646ki1gcho3blb46hmq3qtr5pfmith.apps.googleusercontent.com',G_CLIENT_SECRET='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';
+const SITE='https://potatosalad-san.github.io/Shogi-analyzer-for-pc/'; // ← 自分のGitHub PagesのURLに合わせる
 const cfg=()=>path.join(app.getPath('userData'),'engine.json');
 function rd(){let c={};try{c=JSON.parse(fs.readFileSync(cfg(),'utf8'))}catch(e){}
   if(!c.engines)c.engines=c.path?[{id:crypto.randomUUID(),name:path.basename(c.path).replace(/\.exe$/i,''),path:c.path}]:[];
