@@ -89,6 +89,16 @@ body{max-width:none}
 @font-face{font-family:'Shoryu';src:url('fonts/shoryu.woff2') format('woff2'),url('fonts/shoryu.ttf') format('truetype'),url('fonts/shoryu.otf') format('opentype');font-display:swap}
 #ens{white-space:pre-wrap;word-break:break-all}
 .eo{display:flex!important;justify-content:space-between;align-items:center;gap:10px;padding:8px 22px!important}.eo span{flex:1;word-break:break-all;font-size:13px}.eo input[type=number],.eo input[type=text],.eo select{width:48%!important;margin:0!important}
+/* ---- 解析モード v2 ---- */
+#bd{position:relative}
+#game.am #bd{max-width:26vh}
+.atb{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}.atb td{padding:5px 6px;border-bottom:1px solid var(--ln);vertical-align:top}.atb tr.arow{cursor:pointer}.atb tr.arow:hover{background:var(--sel)}.atb td.pv{color:var(--sub);word-break:break-all}.ap{padding:2px 8px!important}
+.card{border:2px solid #d9a45a;border-radius:10px;padding:8px 10px;margin:8px 0;background:var(--card)}.sgc{border-color:#43a047}
+.mv.sg{color:#2e7d32;font-style:italic}.tn.sg{background:#e8f5e9!important;color:#1b5e20!important;border:1px dashed #43a047!important}
+@media(min-width:820px) and (min-height:560px) and (orientation:landscape){
+#game.am{grid-template-columns:max(300px,26vw) minmax(0,1fr)}
+#game.am #bd{max-width:none;width:min(calc(100dvh - 150px),calc(max(300px,26vw) - 100px))}
+}
 </style><script>
 if(!self.crossOriginIsolated&&'serviceWorker' in navigator&&location.protocol==='https:'){const n=+sessionStorage.getItem('coi')||0,rl=()=>{if(n<3){sessionStorage.setItem('coi',n+1);location.reload()}};
 navigator.serviceWorker.addEventListener('controllerchange',rl);
@@ -141,7 +151,7 @@ function relink(n,p){n.par=p;n.ch.forEach(c=>relink(c,n))}
 function mkGame(t,root){const o={id:Date.now()+''+Math.random(),title:t,t:Date.now(),root:root||{ch:[],c:''}};G.unshift(o);return o}
 function openGame(o){g=o;relink(g.root,null);g.root.st=init();cur=g.root;sel=null;open=null;show('game')}
 function addMove(m){const st=getSt(cur),lab=label(st,m);let e=cur.ch.find(c=>c.lab===lab);
-if(!e){e={m,lab,c:'',ch:[],par:cur};cur.ch.push(e)}cur=e;sel=null;open=null;save();render()}
+if(!e){e={m,lab,c:'',ch:[],par:cur};cur.ch.push(e)}if(e.sg)delete e.sg;cur=e;sel=null;open=null;save();render()}
 const FW='０１２３４５６７８９';
 function parseKif(tx){const root={ch:[],c:''};root.st=init();let n=root,path=[],lines=[path];
 for(const raw of tx.split(/\r?\n/)){const l=raw.trim();
@@ -157,9 +167,9 @@ const lab=label(st,m);let e=n.ch.find(c=>c.lab===lab);if(!e){e={m,lab,c:'',ch:[]
 return root}
 function toKif(wa){let s='手合割：平手\n手数----指手---------消費時間--\n';
 const fm=n=>n.lab.slice(1).replace(/^(\d)([一二三四五六七八九])/,(a,x,y)=>'０１２３４５６７８９'[+x]+y);
-function line(n,d){const al=[];for(;n;n=n.ch[0],d++){s+=d+' '+fm(n)+'\n';if(n.c)s+='*'+n.c.replace(/\n/g,'\n*')+'\n';if(wa&&n.an)s+=anTxt(n);n.ch.slice(1).forEach(a=>al.push([a,d+1]))}
+function line(n,d){const al=[];for(;n;n=n.ch.find(c=>!c.sg),d++){s+=d+' '+fm(n)+'\n';if(n.c)s+='*'+n.c.replace(/\n/g,'\n*')+'\n';if(wa&&n.an)s+=anTxt(n);n.ch.filter(c=>!c.sg).slice(1).forEach(a=>al.push([a,d+1]))}
 al.forEach(([a,d])=>{s+='\n変化：'+d+'手\n';line(a,d)})}
-line(g.root.ch[0],1);return s}
+line(g.root.ch.find(c=>!c.sg),1);return s}
 function show(v){view=v;['home','game','tree'].forEach(x=>$('#'+x).classList.toggle('on',x===v));$('#bk').style.display=v==='home'?'none':'';
 $('#mn').style.display=v==='tree'?'none':'';$('#ttl').textContent=v==='home'?'棋譜管理':v==='tree'?'分岐ツリー':g.title;render()}
 function render(){if(view==='home')rHome();else if(view==='game')rGame();else rTree()}
@@ -198,27 +208,27 @@ document.querySelectorAll('[data-t]').forEach(e=>e.onclick=()=>toast('準備中�
 function path(){const a=[];for(let n=cur;n.par;n=n.par)a.unshift(n);for(let n=cur.ch[0];n;n=n.ch[0])a.push(n);return a}
 const PN={歩:'歩兵',香:'香車',桂:'桂馬',銀:'銀將',金:'金將',飛:'飛車',角:'角行',と:'と金',杏:'成香',圭:'成桂',全:'成銀',馬:'龍馬',龍:'龍王'};
 function pcEl(p,s,rot){const e=document.createElement('span');e.className='pc'+(rot?' w':'');const n=p==='玉'?(s?'玉將':'王將'):PN[p];e.innerHTML='<i>'+n[0]+'</i><i>'+n[1]+'</i>';return e}
-function rHand(s){const e=$('#h'+(s===(flip?1:0)?1:0)),h=getSt(cur).h[s];e.innerHTML='';
-HO.split('').forEach(p=>{if(h[p]>0){const b=document.createElement('button');b.className='hp'+(sel&&sel.drop===p&&getSt(cur).side===s?' s':'');
+function rHand(s){const e=$('#h'+(s===(flip?1:0)?1:0)),h=vst().h[s];e.innerHTML='';
+HO.split('').forEach(p=>{if(h[p]>0){const b=document.createElement('button');b.className='hp'+(sel&&sel.drop===p&&vst().side===s?' s':'');
 b.append(pcEl(p,s,(s===1)!==flip));
 if(h[p]>1){const n=document.createElement('span');n.className='cnt';n.textContent=h[p];b.append(n)}
-b.onclick=()=>{const st=getSt(cur);if(st.side!==s)return;sel=sel&&sel.drop===p?null:{drop:p};rGame()};e.append(b)}})}
-function rGame(){syncAN();const st=getSt(cur),bd=$('#bd');bd.innerHTML='';
+b.onclick=()=>{const st=vst();if(st.side!==s)return;sel=sel&&sel.drop===p?null:{drop:p};rGame()};e.append(b)}})}
+function rGame(nog){if(PVW&&PVW.node!==cur)PVW=null;$('#game').classList.toggle('am',tab===2);syncAN();const st=vst(),bd=$('#bd');bd.innerHTML='';
 const xs=flip?[1,2,3,4,5,6,7,8,9]:[9,8,7,6,5,4,3,2,1],ys=flip?[9,8,7,6,5,4,3,2,1]:[1,2,3,4,5,6,7,8,9];
 xs.forEach(x=>{const l=document.createElement('div');l.className='lb';l.textContent=x;bd.append(l)});bd.append(document.createElement('div'));
 ys.forEach(y=>{xs.forEach(x=>{const c=document.createElement('div'),p=st.b[y][x];c.className='c'+(st.last&&st.last[0]==x&&st.last[1]==y?' l':'')+(sel&&sel.x==x&&sel.y==y?' sl':'')+bmCls(x,y);
 if(p)c.append(pcEl(p.p,p.s,(p.s===1)!==flip));
 c.onclick=()=>tap(x,y);bd.append(c)});const l=document.createElement('div');l.className='lb';l.textContent=RK[y-1];bd.append(l)});
-rHand(0);rHand(1);
+rHand(0);rHand(1);if(!PVW)drawArrows();
 const ml=$('#ml');ml.innerHTML='';const ps=path();
 const st0=document.createElement('div');st0.className='mv'+(cur===g.root?' cu':'');st0.innerHTML='<span>開始局面</span>';st0.onclick=()=>{cur=g.root;sel=null;rGame()};ml.append(st0);
-ps.forEach((n,i)=>{const d=document.createElement('div');d.className='mv'+(n===cur?' cu':'');const sp=document.createElement('span');sp.textContent=(i+1)+'. '+n.lab;d.append(sp);
+ps.forEach((n,i)=>{const d=document.createElement('div');d.className='mv'+(n===cur?' cu':'')+(n.sg?' sg':'');const sp=document.createElement('span');sp.textContent=(i+1)+'. '+n.lab;d.append(sp);
 if(n.par.ch.length>1){const b=document.createElement('i');b.textContent=open===n?'⌃':'⌄';b.onclick=e=>{e.stopPropagation();open=open===n?null:n;rGame()};d.append(b)}
 lp(d,n,i);d.onclick=()=>{if(LPF){LPF=false;return}const br=n.par.ch.length>1;open=br&&!(cur===n&&open===n)?n:null;cur=n;sel=null;rGame()};ml.append(d);
 if(open===n)n.par.ch.forEach(c=>{const s=document.createElement('div');s.className='sib';s.textContent=(i+1)+'. '+c.lab+(c===n?'  ✓':'');s.onclick=()=>{cur=c;open=null;sel=null;rGame()};ml.append(s)})});
 const k=ml.querySelector('.cu');if(k)k.scrollIntoView({block:'nearest'});
 const cm=$('#cm');cm.value=cur.c||'';cm.oninput=()=>{cur.c=cm.value;save()};
-$('#t1').className=tab===1?'a':'';$('#game').classList.toggle('am',tab===2);$('#ba').style.background=tab===2?'rgba(255,255,255,.35)':'';cm.style.display=tab===1?'':'none';$('#an').style.display=tab===2?'':'none';$('#ml').style.display=tab===2?'none':'';rAnr();if(EN.ready&&EN.auto&&!EN.batch&&!cur.an&&EN.last!==cur){EN.last=cur;anSoon()}}
+$('#t1').className=tab===1?'a':'';$('#game').classList.toggle('am',tab===2);$('#ba').style.background=tab===2?'rgba(255,255,255,.35)':'';cm.style.display=tab===1?'':'none';$('#an').style.display=tab===2?'':'none';$('#ml').style.display=tab===2?'none':'';rAnr(nog);autoTrig()}
 const D={歩:[[0,-1]],桂:[[1,-2],[-1,-2]],銀:[[0,-1],[1,-1],[-1,-1],[1,1],[-1,1]],金:[[0,-1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1]],玉:[[0,-1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[1,1],[-1,1]],馬:[[0,-1],[0,1],[1,0],[-1,0]],龍:[[1,-1],[-1,-1],[1,1],[-1,1]]};
 D.と=D.杏=D.圭=D.全=D.金;
 const S={香:[[0,-1]],角:[[1,-1],[-1,-1],[1,1],[-1,1]],馬:[[1,-1],[-1,-1],[1,1],[-1,1]],飛:[[0,-1],[0,1],[1,0],[-1,0]],龍:[[0,-1],[0,1],[1,0],[-1,0]]};
@@ -239,7 +249,7 @@ function delFrom(n){const p=n.par;p.ch=p.ch.filter(c=>c!==n);for(let q=cur;q;q=q
 function lp(d,n,i){let t=null;const st=()=>{LPF=false;t=setTimeout(()=>{t=null;LPF=true;sheet([[(i+1)+'手目以降を削除（'+n.lab+'）',()=>delFrom(n),'dg']])},500)},cl=()=>{if(t){clearTimeout(t);t=null}};
 d.addEventListener('touchstart',st,{passive:true});['touchend','touchmove','touchcancel','mouseup','mouseleave'].forEach(k=>d.addEventListener(k,cl));
 d.addEventListener('mousedown',st);d.addEventListener('contextmenu',e=>e.preventDefault())}
-function tap(x,y){const st=getSt(cur),p=st.b[y][x];
+function tap(x,y){if(PVW){toast('プレビュー中です。終了してから操作してください');return}const st=getSt(cur),p=st.b[y][x];
 if(sel&&sel.drop){if(p)return;const r=legal(st,{drop:sel.drop,tx:x,ty:y});if(r){toast(r);return}return addMove({drop:sel.drop,tx:x,ty:y})}
 if(sel){if(sel.x==x&&sel.y==y){sel=null;return rGame()}
 if(p&&p.s===st.side){sel={x,y};return rGame()}
@@ -258,7 +268,7 @@ let sv='';L.forEach(o=>{const p=o.n.par._o,x2=cx(o.c),y2=ty(o.d),ym=y2-(H-BH)/2;
 if(p){const x1=cx(p.c),y1=ty(p.d)+BH;sv+=x1==x2?`M${x1} ${y1}V${y2}`:`M${x1} ${y1}V${ym}H${x2}V${y2}`}
 else if(o.c>0){sv+=`M${cx(0)} ${ym}H${x2}V${y2}`}});
 t.innerHTML=`<div style="position:relative;width:${w}px;height:${h}px"><svg width="${w}" height="${h}" style="position:absolute;left:0;top:0"><path d="${sv}" fill="none" style="stroke:var(--sub);stroke-width:1.5;opacity:.6"/></svg></div>`;
-const box=t.firstChild;L.forEach(o=>{const b=document.createElement('div');b.className='tn'+(o.v?' v':'')+(o.n===cur?' cu':'');
+const box=t.firstChild;L.forEach(o=>{const b=document.createElement('div');b.className='tn'+(o.v?' v':'')+(o.n.sg?' sg':'')+(o.n===cur?' cu':'');
 b.style.cssText=`left:${o.c*W+(W-BW)/2}px;top:${ty(o.d)}px;width:${BW}px;height:${BH}px`;b.textContent=o.d+'.'+o.n.lab;
 b.onclick=()=>{cur=o.n;sel=null;show('game')};box.append(b)});
 const wr=document.createElement('div');t.append(wr);wr.append(box);box.style.transformOrigin='0 0';TZ={box,wr,w,h};applyZ();
@@ -277,15 +287,15 @@ $('#b2').onclick=()=>{if(cur.ch[0]){cur=cur.ch[0];sel=null;rGame()}};$('#b3').on
 $('#fl').onclick=()=>{flip=!flip;rGame()};$('#tb').onclick=()=>show('tree');$('#t1').onclick=()=>{tab=1;rGame()};$('#ba').onclick=()=>{tab=tab===2?1:2;rGame()};
 setSt('off');$('#cs').onclick=()=>{if(!cdb){window.fbLogin?window.fbLogin():toast('Firebaseの設定が未入力です')}else sheet([[(window.fbUser||'')+' でログイン中',()=>{}],['今すぐ同期',()=>sync()],['ログアウト',()=>window.fbLogout()]])};
 const ENGINE_URLS=['engine/yaneuraou.halfkp.js','engine/yaneuraou.halfkp.noeval.js','engine/yaneuraou.js'];
-const EN={yn:null,ready:false,busy:false,pend:false,last:null,auto:true,ms:3000,src:'内蔵',node:null,log:[]};let AN=null;
-const DEF=()=>({mode:'movetime',t:3,n:2000000,d:16,th:1,hash:16,mpv:1});
+const EN={yn:null,ready:false,busy:false,pend:false,last:null,auto:true,ms:3000,src:'内蔵',node:null,log:[],sug:true,off:false};let AN=null;
+const DEF=()=>({mode:'infinite',t:3,n:2000000,d:16,th:1,hash:16,mpv:3});
 const ST=Object.assign(DEF(),(()=>{try{return JSON.parse(localStorage.getItem('enst')||'{}')}catch(e){return{}}})());
 const saveST=()=>{try{localStorage.setItem('enst',JSON.stringify(ST))}catch(e){}};
-function goCmd(){return ST.mode==='nodes'?'go nodes '+ST.n:ST.mode==='depth'?'go depth '+ST.d:'go movetime '+Math.round(ST.t*1000)}
+function goCmd(){const m=ST.mode==='infinite'&&EN.batch?'movetime':ST.mode;return m==='infinite'?'go infinite':m==='nodes'?'go nodes '+ST.n:m==='depth'?'go depth '+ST.d:'go movetime '+Math.round(ST.t*1000)}
 function sendOpts(P){P('setoption name Threads value '+ST.th);P('setoption name USI_Hash value '+ST.hash);P('setoption name MultiPV value '+ST.mpv)}
 function optNow(){sendOpts(t=>EN.yn.postMessage(t));EN.yn.postMessage('isready');EN.last=null;AN=null}
 function applyOpts(){if(!EN.ready)return;if(EN.busy){EN.opt=true;EN.yn.postMessage('stop')}else{optNow();rGame()}}
-function stUI(){const m=ST.mode;$('#sm').value=m;$('#sv').value=m==='nodes'?ST.n:m==='depth'?ST.d:ST.t;$('#sv').step=m==='movetime'?'0.5':'1';$('#sth').value=ST.th;$('#shs').value=ST.hash;$('#smp').value=ST.mpv}
+function stUI(){const m=ST.mode;$('#sm').value=m;$('#sv').value=m==='nodes'?ST.n:m==='depth'?ST.d:ST.t;$('#sv').step=m==='movetime'?'0.5':'1';$('#sv').style.display=m==='infinite'?'none':'';$('#sth').value=ST.th;$('#shs').value=ST.hash;$('#smp').value=ST.mpv}
 function stRead(){const m=$('#sm').value,v=+$('#sv').value||1;ST.mode=m;if(m==='nodes')ST.n=Math.max(1000,Math.round(v));else if(m==='depth')ST.d=Math.min(60,Math.max(1,Math.round(v)));else ST.t=Math.min(300,Math.max(.5,v));
 ST.th=Math.min(32,Math.max(1,Math.round(+$('#sth').value||1)));ST.hash=+$('#shs').value;ST.mpv=Math.min(5,Math.max(1,Math.round(+$('#smp').value||1)));saveST();stUI()}
 const SF={歩:'P',香:'L',桂:'N',銀:'S',角:'B',飛:'R',金:'G',玉:'K'},LP={P:'歩',L:'香',N:'桂',S:'銀',G:'金',B:'角',R:'飛'};
@@ -298,35 +308,81 @@ function pvJa(st,pv,n){const o=[];try{for(const u of pv.slice(0,n)){if(!UR.test(
 const dep=n=>{let d=0;for(;n.par;n=n.par)d++;return d};
 const idb=(m,k,v)=>new Promise((ok,ng)=>{const q=indexedDB.open('kifu-en',1);q.onupgradeneeded=()=>q.result.createObjectStore('f');q.onsuccess=()=>{const t=q.result.transaction('f',m),o=t.objectStore('f'),r=m==='readwrite'?o.put(v,k):o.get(k);t.oncomplete=()=>ok(r.result);t.onerror=()=>ng(t.error)};q.onerror=()=>ng(q.error)});
 function syncAN(){if((!AN||AN.node!==cur)&&cur.an&&!(EN.busy&&EN.node===cur))AN={node:cur,lines:{},...cur.an}}
-function rGraph(){const e=$('#ang');if(!e||!g||!cur)return;const ps=path(),N=Math.max(ps.length,20),W=340,H=150,L=30,R=8,X=i=>L+(W-L-R)*i/N,Y=v=>H/2-Math.max(-900,Math.min(900,v))/900*(H/2-10);
+function rGraph(){const e=$('#ang');if(!e||!g||!cur)return;const ps=path(),N=Math.max(ps.length,20),W=340,H=150,L=30,R=8,X=i=>L+(W-L-R)*i/N,Y=v=>H/2-Math.max(-2000,Math.min(2000,v))/2000*(H/2-10);
 let d='',pv=false,cv=null;const ci=cur===g.root?0:ps.indexOf(cur)+1;
-ps.forEach((p,i)=>{if(p.an){const k=getSt(p).side?-1:1,sc=p.an.sc,v=sc.mate!=null?(sc.mate*k>0?900:-900):sc.cp*k;d+=(pv?'L':'M')+X(i+1).toFixed(1)+' '+Y(v).toFixed(1);pv=true;if(i+1===ci)cv=v}else pv=false});
-let gr='';[-900,-600,-300,0,300,600,900].forEach(v=>{gr+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}"/><text class="gt" x="2" y="${Y(v)+3}">${v}</text>`});
-e.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;background:var(--card);border:2px solid #d9a45a;border-radius:8px">${gr}<text class="gt" x="${L+4}" y="12">先手優勢</text><text class="gt" x="${L+4}" y="${H-5}">後手優勢</text><path d="${d}" fill="none" stroke="#1e40ff" stroke-width="2"/><line x1="${X(ci)}" x2="${X(ci)}" y1="2" y2="${H-2}" stroke="#e53935" stroke-width="2"/>${cv!=null?`<text class="gt" x="${Math.min(X(ci)+3,W-30)}" y="${Y(cv)-4}" style="font-weight:700">${Math.round(cv)}</text>`:''}</svg>`;
-e.firstChild.onclick=ev=>{const r=ev.currentTarget.getBoundingClientRect(),px=(ev.clientX-r.left)/r.width*W,i=Math.round((px-L)/(W-L-R)*N);if(i>=1&&i<=ps.length){cur=ps[i-1];sel=null;rGame()}}}
-function nextB(){if(!EN.batch||!EN.batch.length){EN.batch=null;if(EN.origin){cur=EN.origin;EN.origin=null}rGame();return}const n=EN.batch.shift();cur=n;EN.last=n;sel=null;analyze();rGame()}
-function batchToggle(){if(!EN.ready){toast('エンジンを起動してください');return}
-if(EN.batch){EN.batch=null;if(EN.busy){EN.skip=true;EN.yn.postMessage('stop')}if(EN.origin){cur=EN.origin;EN.origin=null}rGame();return}
-const ps=path().filter(n=>!n.an);if(!ps.length){toast('すべて解析済みです');return}EN.origin=cur;EN.batch=ps;EN.bN=ps.length;nextB()}
-function bmCls(x,y){if(!AN||AN.node!==cur||!AN.best||!UR.test(AN.best))return'';const m=fromUsi(AN.best);return(m.tx===x&&m.ty===y?' bm':'')+(!m.drop&&m.fx===x&&m.fy===y?' bf':'')}
+ps.forEach((p,i)=>{const A=(AN&&AN.node===p&&AN.sc)?AN:p.an;if(A){const k=getSt(p).side?-1:1,sc=A.sc,v=sc.mate!=null?(sc.mate*k>0?2000:-2000):sc.cp*k;d+=(pv?'L':'M')+X(i+1).toFixed(1)+' '+Y(v).toFixed(1);pv=true;if(i+1===ci)cv=v}else pv=false});
+let gr='';[-2000,-1000,0,1000,2000].forEach(v=>{gr+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}"/><text class="gt" x="2" y="${Y(v)+3}">${v}</text>`});
+e.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;background:var(--card);border:2px solid #d9a45a;border-radius:8px">${gr}<text class="gt" x="${L+4}" y="12">先手優勢</text><text class="gt" x="${L+4}" y="${H-5}">後手優勢</text><path d="${d}" fill="none" stroke="#1e40ff" stroke-width="2"/><line id="gcur" x1="${X(ci)}" x2="${X(ci)}" y1="2" y2="${H-2}" stroke="#e53935" stroke-width="2"/>${cv!=null?`<text class="gt" x="${Math.min(X(ci)+3,W-30)}" y="${Y(cv)-4}" style="font-weight:700">${Math.round(cv)}</text>`:''}</svg>`;
+const sv=e.firstChild,rl=sv.querySelector('#gcur'),pick=ev=>{const r=sv.getBoundingClientRect(),px=(ev.clientX-r.left)/r.width*W,i=Math.round((px-L)/(W-L-R)*N);return i>=1&&i<=ps.length?ps[i-1]:null};
+sv.onmousemove=ev=>{const n=pick(ev);if(n&&n!==cur){HOLD=true;cur=n;sel=null;const x=X(ps.indexOf(n)+1);rl.setAttribute('x1',x);rl.setAttribute('x2',x);clearTimeout(HT);HT=setTimeout(()=>{HOLD=false;autoTrig()},700);rGame(true)}};
+sv.onmouseleave=()=>{clearTimeout(HT);HOLD=false;autoTrig()};
+sv.onclick=ev=>{const n=pick(ev);if(n){cur=n;sel=null;HOLD=false;rGame()}}}
+let PVW=null,HOLD=false,HT=null;
+function pvState(){let st=getSt(PVW.node);try{for(let i=0;i<PVW.k;i++)st=apply(st,fromUsi(PVW.pv[i]))}catch(e){}return st}
+const vst=()=>PVW?pvState():getSt(cur);
+function pvStart(i){if(!AN||AN.node!==cur)return;const L=(AN.lines&&AN.lines[i])||(i===1?{pv:AN.pv}:null);if(!L)return;const pv=[];for(const u of L.pv||[]){if(!UR.test(u))break;pv.push(u)}if(!pv.length)return;PVW={node:cur,pv,k:1,i};sel=null;rGame()}
+function pvStep(d){if(!PVW)return;PVW.k=Math.max(0,Math.min(PVW.pv.length,PVW.k+d));rGame()}
+function pvEnd(){PVW=null;rGame()}
+function pvAdd(){if(!PVW)return;const p=PVW.pv.slice(0,PVW.k);PVW=null;p.forEach(u=>addMove(fromUsi(u)))}
+function drawArrows(){const bd=$('#bd'),W=bd.clientWidth,H=bd.clientHeight;if(!W)return;let L=(AN&&AN.node===cur&&AN.lines)||{};if(!L[1]&&AN&&AN.node===cur&&AN.pv)L={...L,1:{pv:AN.pv}};
+const cs=(W-14)/9,cx=f=>(flip?f-1:9-f)*cs+cs/2,cy=r=>14+(flip?9-r:r-1)*cs+cs/2,col=['#e53935','#fb8c00','#1e88e5'];let h='';
+for(let i=3;i>=1;i--){const ln=L[i];if(!ln||!ln.pv||!UR.test(ln.pv[0]))continue;const m=fromUsi(ln.pv[0]),x2=cx(m.tx),y2=cy(m.ty),c=col[i-1];
+if(m.drop)h+=`<circle cx="${x2}" cy="${y2}" r="${cs*.36}" fill="none" stroke="${c}" stroke-width="3"/>`;
+else{const x1=cx(m.fx),y1=cy(m.fy),dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,hs=cs*.34,bx=x2-ux*hs*.9,by=y2-uy*hs*.9;
+h+=`<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${Math.max(3,cs*.11)}" stroke-linecap="round" opacity=".85"/><polygon points="${x2},${y2} ${bx-uy*hs*.55},${by+ux*hs*.55} ${bx+uy*hs*.55},${by-ux*hs*.55}" fill="${c}" opacity=".9"/>`}
+h+=`<circle cx="${x2}" cy="${y2}" r="${cs*.2}" fill="#fff" stroke="${c}" stroke-width="2"/><text x="${x2}" y="${y2+cs*.09}" text-anchor="middle" font-size="${cs*.26}" font-weight="700" fill="${c}">${['最','次','3'][i-1]}</text>`}
+if(h){const v=document.createElementNS('http://www.w3.org/2000/svg','svg');v.setAttribute('viewBox',`0 0 ${W} ${H}`);v.style.cssText='position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:5';v.innerHTML=h;bd.append(v)}}
+function autoTrig(){if(EN.ready&&EN.auto&&!EN.off&&!EN.batch&&!HOLD&&!PVW&&!cur.an&&EN.last!==cur){EN.last=cur;anSoon()}}
+const isSg=n=>{for(;n;n=n.par)if(n.sg)return true;return false};
+function suggest(n){if(!EN.sug||!n.an||isSg(n))return;const a=n.an;if(!a.pv||!a.pv.length||!UR.test(a.pv[0]))return;
+let st=getSt(n);try{const lab0=label(st,fromUsi(a.pv[0]));if(n.ch.some(c=>c.lab===lab0))return;let p=n;
+for(const u of a.pv.slice(0,6)){if(!UR.test(u))break;const m=fromUsi(u),lab=label(st,m);st=apply(st,m);const c={m,lab,ch:[],par:p,c:'',sg:true,st};p.ch.push(c);p=c}}catch(e){}}
+function sgRoot(){for(let q=cur;q;q=q.par)if(q.sg&&!(q.par&&q.par.sg))return q;return cur.ch.find(c=>c.sg)||null}
+function sgAccept(r){const f=n=>{delete n.sg;n.ch.forEach(f)};f(r);save();rGame()}
+function sgDrop(r){const p=r.par;p.ch=p.ch.filter(c=>c!==r);for(let q=cur;q;q=q.par)if(q===r){cur=p;break}save();rGame()}
+function allNodes(){const a=[],f=n=>n.ch.forEach(c=>{if(!c.sg){a.push(c);f(c)}});f(g.root);return a}
+function batchRun(list,force){const ps=(force?list:list.filter(n=>!n.an)).filter(n=>!n.sg);if(!ps.length){toast('解析する手がありません');return}EN.origin=cur;EN.batch=ps.slice();EN.bN=ps.length;EN.bForce=force;EN.off=false;nextB()}
+function batchStop(){EN.batch=null;if(EN.busy){EN.skip=true;EN.yn.postMessage('stop')}if(EN.origin){cur=EN.origin;EN.origin=null}rGame()}
+function batchMenu(){if(!EN.ready){toast('エンジンを起動してください');return}if(EN.batch){batchStop();return}
+sheet([['この変化：未解析のみ',()=>batchRun(path(),false)],['この変化：すべて（再解析）',()=>batchRun(path(),true)],['全分岐：未解析のみ',()=>batchRun(allNodes(),false)],['全分岐：すべて（再解析）',()=>batchRun(allNodes(),true)]])}
+document.addEventListener('keydown',e=>{if(view!=='game'||/INPUT|TEXTAREA|SELECT/.test((e.target||{}).tagName||''))return;
+if(PVW){if(e.key==='ArrowLeft')pvStep(-1);else if(e.key==='ArrowRight')pvStep(1);else if(e.key==='Escape')pvEnd();else return;e.preventDefault();return}
+const mv=n=>{if(n){cur=n;sel=null;HOLD=false;rGame()}};
+if(e.key==='ArrowLeft')mv(cur.par);else if(e.key==='ArrowRight')mv(cur.ch.find(c=>!c.sg)||cur.ch[0]);
+else if(e.key==='ArrowUp'){let n=cur;for(let i=0;i<10&&n.par;i++)n=n.par;mv(n)}else if(e.key==='ArrowDown'){let n=cur;for(let i=0;i<10&&(n.ch[0]);i++)n=n.ch[0];mv(n)}else return;e.preventDefault()});
+function nextB(){if(!EN.batch||!EN.batch.length){EN.batch=null;if(EN.origin){cur=EN.origin;EN.origin=null}rGame();return}const n=EN.batch.shift();if(EN.bForce)delete n.an;cur=n;EN.last=n;sel=null;analyze();rGame()}
+function bmCls(x,y){return''}
 function onLine(l){if(l.startsWith('option name')&&EN.optsRaw)EN.optsRaw.push(l);if(l.startsWith('id name'))EN.idn=l;if(!l.startsWith('info depth')){EN.log.push(l);if(EN.log.length>30)EN.log.shift()}if(EN.w)EN.w(l);
 if(l.startsWith('info')&&l.includes(' pv ')&&!EN.pend){const d=l.match(/depth (\d+)/),s=l.match(/score (cp|mate) (-?\d+)/),p=l.match(/ pv (.*)$/);
-if(s&&p&&EN.node===cur){const mp=l.match(/multipv (\d+)/),i=mp?+mp[1]:1,ln={depth:d?d[1]:'?',sc:s[1]==='cp'?{cp:+s[2]}:{mate:+s[2]},pv:p[1].trim().split(/\s+/)};if(!AN||AN.node!==cur)AN={node:cur,lines:{}};AN.lines[i]=ln;if(i===1)Object.assign(AN,ln);rAnr()}}
-else if(l.startsWith('bestmove')){EN.busy=false;const b=l.split(' ')[1],ok=!EN.pend&&!EN.opt&&!EN.skip;EN.skip=false;if(AN&&AN.node===EN.node&&UR.test(b))AN.best=b;
-if(ok&&AN&&AN.node===EN.node&&AN.sc){EN.node.an={depth:AN.depth,sc:AN.sc,pv:AN.pv.slice(0,12),best:UR.test(b)?b:null};save()}
+if(s&&p&&EN.node===cur){const mp=l.match(/multipv (\d+)/),i=mp?+mp[1]:1,ln={depth:d?d[1]:'?',sc:s[1]==='cp'?{cp:+s[2]}:{mate:+s[2]},pv:p[1].trim().split(/\s+/)};if(!AN||AN.node!==cur)AN={node:cur,lines:{}};AN.lines[i]=ln;if(i===1){Object.assign(AN,ln);const nd=l.match(/ nodes (\d+)/),np=l.match(/ nps (\d+)/),tm=l.match(/ time (\d+)/);AN.stt={nodes:nd?+nd[1]:0,nps:np?+np[1]:0,time:tm?+tm[1]:0}}rAnr(true)}}
+else if(l.startsWith('bestmove')){EN.busy=false;const b=l.split(' ')[1],ok=!EN.opt&&!EN.skip,dn=AN&&+AN.depth||0;EN.skip=false;if(AN&&AN.node===EN.node&&UR.test(b))AN.best=b;
+if(ok&&AN&&AN.node===EN.node&&AN.sc&&(!EN.pend||dn>=12)&&(!EN.node.an||dn>=+EN.node.an.depth)){EN.node.an={depth:AN.depth,sc:AN.sc,pv:AN.pv.slice(0,12),best:UR.test(b)?b:null,stt:AN.stt,lines:Object.fromEntries(Object.entries(AN.lines||{}).slice(0,5).map(([q,v])=>[q,{depth:v.depth,sc:v.sc,pv:v.pv.slice(0,12)}]))};if(!EN.batch)suggest(EN.node);save()}
 if(EN.opt){EN.opt=false;optNow();if(EN.batch)EN.batch.unshift(EN.node)}
 if(EN.batch&&!EN.pend){nextB();return}
 if(EN.pend)run();else rGame()}}
 function run(){EN.pend=false;EN.busy=true;EN.node=cur;AN=null;EN.yn.postMessage('position sfen '+toSfen(getSt(cur),dep(cur)+1));EN.yn.postMessage(goCmd());rAnr()}
 function analyze(){if(!EN.ready)return;if(EN.busy){EN.pend=true;EN.yn.postMessage('stop');return}run()}
 function anSoon(){clearTimeout(EN.tm);EN.tm=setTimeout(analyze,250)}
-function rAnr(){const e=$('#anr');if(!e)return;rGraph();const bb=$('#enB');if(bb)bb.textContent=EN.batch?'停止（'+(EN.bN-EN.batch.length)+'/'+EN.bN+'）':'未解析をすべて解析';if(!EN.ready){e.innerHTML='<p style="color:var(--sub)">エンジンが未起動です。</p>';return}
-if(!AN||AN.node!==cur||!AN.sc){e.innerHTML='<p style="color:var(--sub)">'+(EN.busy?'解析中…':'解析待ち')+'</p>';return}
-const st=getSt(cur),k=st.side?-1:1,sc=AN.sc,v=sc.mate!=null?(sc.mate*k>0?1e4:-1e4):sc.cp*k,pct=100/(1+Math.exp(-v/600)),pv=pvJa(st,AN.pv,12);
-const ot=Object.keys(AN.lines||{}).filter(i=>i>1).sort().map(i=>{const L=AN.lines[i],q=pvJa(st,L.pv,6),vv=L.sc.mate!=null?(L.sc.mate*k>0?'先手':'後手')+Math.abs(L.sc.mate)+'手詰':(L.sc.cp*k>0?'+':'')+L.sc.cp*k;return`<div style="margin-top:6px;border-top:1px solid var(--ln);padding-top:4px"><b>${i}. ${vv}</b> ${q.join(' ')}</div>`}).join('');
-const tx=sc.mate!=null?(sc.mate*k>0?'先手':'後手')+'の'+Math.abs(sc.mate)+'手詰':(v>0?'+':'')+v;
-e.innerHTML=`<div style="font-size:22px;font-weight:700">${tx}</div><div style="height:8px;background:#222;border-radius:4px;overflow:hidden;margin:4px 0"><div style="width:${pct}%;height:100%;background:#fff"></div></div><div>深さ ${AN.depth}${EN.busy?'（解析中…）':''}</div><div style="margin:6px 0">最善手: <b>${pv[0]||'-'}</b></div><div class="pvb">#読み筋［深さ${AN.depth}］${pv.join(' ')}</div>${ot}`+(AN.best?'<div class="sib" id="enp" style="margin-top:8px;border-radius:6px">最善手を棋譜に追加</div>':'');
-const b=$('#enp');if(b)b.onclick=()=>addMove(fromUsi(AN.best))}
+const evW=v=>{const a=Math.abs(v);if(a<100)return'互角';return(v>0?'先手':'後手')+(a<300?'やや有利':a<700?'有利':a<1500?'優勢':'勝勢')};
+const evT=(sc,k)=>sc.mate!=null?(sc.mate*k>0?'先手':'後手')+Math.abs(sc.mate)+'手詰':(sc.cp*k>0?'+':'')+sc.cp*k;
+function rAnr(nog){const e=$('#anr');if(!e)return;if(!nog)rGraph();
+const bb=$('#enB');if(bb)bb.textContent=EN.batch?'中止（'+(EN.bN-EN.batch.length)+'/'+EN.bN+'）':'まとめて解析…';const sb=$('#enS');if(sb)sb.textContent=EN.batch?'中止':EN.off?'再開':'停止';
+if(!EN.ready){e.innerHTML='<p style="color:var(--sub)">エンジンが未起動です。</p>';return}
+const st=getSt(cur),k=st.side?-1:1,A=(AN&&AN.node===cur&&AN.sc)?AN:null;let h='';
+if(!A)h+='<p style="color:var(--sub)">'+(EN.busy?'解析中…':'解析待ち')+'</p>';
+else{const v=A.sc.mate!=null?(A.sc.mate*k>0?1e4:-1e4):A.sc.cp*k,s=A.stt||{},n=Math.max(ST.mpv,3);
+h+=`<div style="display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline"><b style="font-size:20px">${evW(v)}（${evT(A.sc,k)}）</b><span>深さ ${A.depth}${EN.busy?' 解析中…':''}</span>${s.time!=null?`<span>時間 ${(s.time/1000).toFixed(1)}s</span><span>ノード ${(s.nodes||0).toLocaleString()}</span><span>NPS ${Math.round((s.nps||0)/1000)}k</span>`:''}<span>スレッド ${ST.th}</span>${EN.idn?`<span style="color:var(--sub)">${esc(EN.idn.slice(8))}</span>`:''}</div>`;
+h+='<table class="atb"><tr style="color:var(--sub)"><td>順位</td><td>評価値</td><td>候補手</td><td>読み筋（タップでプレビュー）</td><td></td></tr>';
+for(let i=1;i<=n;i++){const L=(A.lines&&A.lines[i])||(i===1?{sc:A.sc,pv:A.pv}:null);if(!L)continue;const q=pvJa(st,L.pv||[],10);
+h+=`<tr class="arow" data-i="${i}"><td style="color:${['#e53935','#fb8c00','#1e88e5'][i-1]||'inherit'};font-weight:700">${['最善','次善'][i-1]||i}</td><td>${evT(L.sc,k)}</td><td>${esc(q[0]||'-')}</td><td class="pv">${esc(q.slice(1).join(' '))}</td><td><button class="ab ap" data-i="${i}">＋</button></td></tr>`}
+h+='</table>'}
+if(PVW)h+=`<div class="card">プレビュー中（${PVW.k}/${PVW.pv.length}）<button class="ab" id="pv1">◀</button><button class="ab" id="pv2">▶</button><button class="ab" id="pv3">棋譜に追加</button><button class="ab" id="pv4">終了</button></div>`;
+const sg=sgRoot();if(sg){let c=0;const f=x=>{c++;x.ch.forEach(f)};f(sg);h+=`<div class="card sgc">解析の提案: <b>${esc(sg.lab)}</b> から${c}手の変化（緑色）を棋譜に追加しますか？<br><button class="ab" id="sg1">追加する</button><button class="ab" id="sg2">破棄</button></div>`}
+e.innerHTML=h;
+e.querySelectorAll('.arow').forEach(r=>r.onclick=ev=>{if(ev.target.closest('.ap'))return;pvStart(+r.dataset.i)});
+e.querySelectorAll('.ap').forEach(b=>b.onclick=()=>{const L=(A&&A.lines&&A.lines[b.dataset.i])||(A?{pv:A.pv}:null);if(L&&L.pv&&UR.test(L.pv[0]))addMove(fromUsi(L.pv[0]))});
+if(PVW){$('#pv1').onclick=()=>pvStep(-1);$('#pv2').onclick=()=>pvStep(1);$('#pv3').onclick=pvAdd;$('#pv4').onclick=pvEnd}
+if(sg){$('#sg1').onclick=()=>sgAccept(sg);$('#sg2').onclick=()=>sgDrop(sg)}}
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function parseOpt(l){const m=l.match(/^option name (.+?) type (\w+)(.*)$/);if(!m)return null;const r=m[3],o={name:m[1],type:m[2]},d=r.match(/ default (.*?)(?= min | max | var |$)/),mn=r.match(/ min (-?\d+)/),mx=r.match(/ max (-?\d+)/);
 o.def=d?d[1]:'';o.min=mn?+mn[1]:null;o.max=mx?+mx[1]:null;o.vars=r.split(/ var /).slice(1).map(x=>x.trim());return o}
@@ -361,8 +417,8 @@ if(nn&&(NAT||!/noeval/.test(EN.url))){}else if(nn){if(yn.FS&&yn.FS.writeFile){tr
 const mem=navigator.deviceMemory||4;say('オプション設定中…');P('setoption name USI_Hash value '+ST.hash);P('setoption name PvInterval value 0');P('setoption name Threads value '+ST.th);if(ST.mpv>1)P('setoption name MultiPV value '+ST.mpv);
 say('評価関数を読み込み中（isready）…');w=W('readyok');P('isready');await w;EN.ready=true;EN.last=null;o.textContent='起動済み（評価関数: '+EN.src+'）'+(EN.idn?'\n'+EN.idn:'');rGame()}catch(e){console.error(e);say('エラー: '+(e.message||e)+'\n[停止した段階: '+stg+']'+(EN.log.length?'\n--- エンジンの出力 ---\n'+EN.log.slice(-8).join('\n'):''))}}
 window.addEventListener('unhandledrejection',e=>{const o=$('#ens'),m=String(e.reason&&e.reason.message||e.reason);if(o&&/exit|terminated|abort/i.test(m))o.textContent='エンジンが停止しました: '+m+(EN.log.length?'\n--- エンジンの出力 ---\n'+EN.log.slice(-8).join('\n'):'')});
-function anInit(){$('#anc').innerHTML=''+(window.nativeEngine?'<div id="enr"><select id="ens2" style="max-width:55%;font-size:13px"></select> <button class="ab" id="ea">追加</button><button class="ab" id="er">名前変更</button><button class="ab" id="ed">削除</button><button class="ab" id="eo">エンジン設定</button></div>':'')+'<button class="ab" id="enb">エンジン起動</button><label class="ab">評価関数(nn.bin)を選ぶ<input type="file" id="enf" hidden></label><div id="ens" style="margin:6px 0;color:var(--sub)"></div><details style="margin:6px 0"><summary>AI設定</summary><div class="st"><label>探索方式<span><select id="sm"><option value="movetime">時間(秒)</option><option value="nodes">ノード数</option><option value="depth">深さ</option></select> <input type="number" id="sv" min="1"></span></label><label>スレッド数<input type="number" id="sth" min="1" max="32"></label><label>ハッシュ(MB)<select id="shs"><option>16</option><option>32</option><option>64</option><option>128</option><option>256</option><option>512</option><option>1024</option><option>2048</option><option>4096</option><option>8192</option><option>16384</option><option>32768</option></select></label><label>候補手数(MultiPV)<input type="number" id="smp" min="1" max="5"></label><button class="ab" id="sap">設定を適用</button><button class="ab" id="srs">初期値に戻す</button><div style="color:var(--sub)">この端末の論理コア数: '+(navigator.hardwareConcurrency||'不明')+'。スレッドを増やすと発熱・電池消費が増えます。</div></div></details><div><label><input type="checkbox" id="ena" checked>自動解析</label> <button class="ab" id="enB">未解析をすべて解析</button><button class="ab" id="en1">この局面を解析</button></div>';
-$('#enb').onclick=enStart;if(window.nativeEngine)engInit();stUI();$('#sm').onchange=()=>{ST.mode=$('#sm').value;saveST();stUI()};$('#sap').onclick=()=>{stRead();applyOpts();toast('設定を保存しました')};$('#srs').onclick=()=>{Object.assign(ST,DEF());saveST();stUI();applyOpts()};$('#ena').onchange=e=>{EN.auto=e.target.checked};$('#en1').onclick=()=>{delete cur.an;AN=null;EN.last=cur;analyze()};$('#enB').onclick=batchToggle;
+function anInit(){$('#anc').innerHTML=''+(window.nativeEngine?'<div id="enr"><select id="ens2" style="max-width:55%;font-size:13px"></select> <button class="ab" id="ea">追加</button><button class="ab" id="er">名前変更</button><button class="ab" id="ed">削除</button><button class="ab" id="eo">エンジン設定</button></div>':'')+'<button class="ab" id="enb">エンジン起動</button><label class="ab">評価関数(nn.bin)を選ぶ<input type="file" id="enf" hidden></label><div id="ens" style="margin:6px 0;color:var(--sub)"></div><details style="margin:6px 0"><summary>AI設定</summary><div class="st"><label>探索方式<span><select id="sm"><option value="infinite">無制限</option><option value="movetime">時間(秒)</option><option value="nodes">ノード数</option><option value="depth">深さ</option></select> <input type="number" id="sv" min="1"></span></label><label>スレッド数<input type="number" id="sth" min="1" max="32"></label><label>ハッシュ(MB)<select id="shs"><option>16</option><option>32</option><option>64</option><option>128</option><option>256</option><option>512</option><option>1024</option><option>2048</option><option>4096</option><option>8192</option><option>16384</option><option>32768</option></select></label><label>候補手数(MultiPV)<input type="number" id="smp" min="1" max="5"></label><button class="ab" id="sap">設定を適用</button><button class="ab" id="srs">初期値に戻す</button><div style="color:var(--sub)">この端末の論理コア数: '+(navigator.hardwareConcurrency||'不明')+'。スレッドを増やすと発熱・電池消費が増えます。</div></div></details><div><label><input type="checkbox" id="ena" checked>自動解析</label> <label><input type="checkbox" id="enq" checked>解析の提案を棋譜に加える</label><br><button class="ab" id="enS">停止</button><button class="ab" id="en1">この局面を再解析</button><button class="ab" id="enB">まとめて解析…</button></div>';
+$('#enb').onclick=enStart;if(window.nativeEngine)engInit();stUI();$('#sm').onchange=()=>{ST.mode=$('#sm').value;saveST();stUI()};$('#sap').onclick=()=>{stRead();applyOpts();toast('設定を保存しました')};$('#srs').onclick=()=>{Object.assign(ST,DEF());saveST();stUI();applyOpts()};$('#ena').onchange=e=>{EN.auto=e.target.checked};$('#en1').onclick=()=>{if(!EN.ready)return toast('エンジンを起動してください');delete cur.an;AN=null;EN.off=false;EN.last=cur;analyze();rGame()};$('#enB').onclick=batchMenu;$('#enq').onchange=e=>{EN.sug=e.target.checked};$('#enS').onclick=()=>{if(!EN.ready)return;if(EN.batch){batchStop();return}if(EN.busy){EN.off=true;EN.yn.postMessage('stop')}else{EN.off=false;EN.last=null;autoTrig()}rAnr()};
 $('#enf').onchange=async e=>{const f=e.target.files[0];if(!f)return;$('#ens').textContent='保存中…';try{await idb('readwrite','nn',await f.arrayBuffer());$('#ens').textContent=f.name+'（'+(f.size/1048576).toFixed(1)+'MB）を保存しました。エンジンを（再）起動してください。'}catch(x){$('#ens').textContent='保存失敗: '+x.message}};rAnr()}
 anInit();
 window.onLogin=(u,sh)=>{cdb=sh;cuid=u.uid;window.fbUser=u.displayName||u.email||'';sync()};
