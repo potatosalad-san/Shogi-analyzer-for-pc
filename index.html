@@ -99,6 +99,9 @@ body{max-width:none}
 #game.am{grid-template-columns:max(300px,26vw) minmax(0,1fr)}
 #game.am #bd{max-width:none;width:min(calc(100dvh - 150px),calc(max(300px,26vw) - 100px))}
 }
+/* ---- 解析モード v3 ---- */
+.gt{font-size:11px}
+#game.am #bw{align-self:start;margin-top:6px}
 </style><script>
 if(!self.crossOriginIsolated&&'serviceWorker' in navigator&&location.protocol==='https:'){const n=+sessionStorage.getItem('coi')||0,rl=()=>{if(n<3){sessionStorage.setItem('coi',n+1);location.reload()}};
 navigator.serviceWorker.addEventListener('controllerchange',rl);
@@ -106,7 +109,7 @@ navigator.serviceWorker.register('coi-sw.js').then(r=>{r.update();if(r.active&&!
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yuji+Boku&family=Yuji+Mai&family=Yuji+Syuku&family=Zen+Antique&text=%E6%AD%A9%E5%85%B5%E9%A6%99%E8%BB%8A%E6%A1%82%E9%A6%AC%E9%8A%80%E5%B0%87%E9%87%91%E7%8E%8B%E7%8E%89%E9%A3%9B%E8%A7%92%E9%BE%8D%E6%88%90%E3%81%A8%E5%85%A8%E5%9C%AD%E6%9D%8F&display=swap">
 </head><body>
-<header><button class="ib" id="bk" style="display:none">←</button><h1 id="ttl">棋譜管理</h1><button class="ib" id="cs" style="font-size:13px;width:auto;padding:0 8px">☁</button><button class="ib" id="mn">⋮</button></header>
+<header><button class="ib" id="bk" style="display:none">←</button><h1 id="ttl">棋譜管理</h1><button class="ib" id="ai" style="font-size:13px;width:auto;padding:0 8px">AI設定</button><button class="ib" id="cs" style="font-size:13px;width:auto;padding:0 8px">☁</button><button class="ib" id="mn">⋮</button></header>
 <main>
 <section class="v on" id="home"><div id="list"></div><button class="fab" id="fab">＋</button>
 <nav><div class="a"><span>🏠</span>ホーム</div><div data-t><span>🏋</span>棋譜トレ</div><div data-t><span>📕</span>棋書等</div><div data-t><span>⚙</span>設定</div></nav></section>
@@ -291,13 +294,14 @@ const EN={yn:null,ready:false,busy:false,pend:false,last:null,auto:true,ms:3000,
 const DEF=()=>({mode:'infinite',t:3,n:2000000,d:16,th:1,hash:16,mpv:3});
 const ST=Object.assign(DEF(),(()=>{try{return JSON.parse(localStorage.getItem('enst')||'{}')}catch(e){return{}}})());
 const saveST=()=>{try{localStorage.setItem('enst',JSON.stringify(ST))}catch(e){}};
+if(ST.v!==2){ST.v=2;if(ST.mpv<3)ST.mpv=3;saveST()}
 function goCmd(){const m=ST.mode==='infinite'&&EN.batch?'movetime':ST.mode;return m==='infinite'?'go infinite':m==='nodes'?'go nodes '+ST.n:m==='depth'?'go depth '+ST.d:'go movetime '+Math.round(ST.t*1000)}
 function sendOpts(P){P('setoption name Threads value '+ST.th);P('setoption name USI_Hash value '+ST.hash);P('setoption name MultiPV value '+ST.mpv)}
 function optNow(){sendOpts(t=>EN.yn.postMessage(t));EN.yn.postMessage('isready');EN.last=null;AN=null}
 function applyOpts(){if(!EN.ready)return;if(EN.busy){EN.opt=true;EN.yn.postMessage('stop')}else{optNow();rGame()}}
 function stUI(){const m=ST.mode;$('#sm').value=m;$('#sv').value=m==='nodes'?ST.n:m==='depth'?ST.d:ST.t;$('#sv').step=m==='movetime'?'0.5':'1';$('#sv').style.display=m==='infinite'?'none':'';$('#sth').value=ST.th;$('#shs').value=ST.hash;$('#smp').value=ST.mpv}
 function stRead(){const m=$('#sm').value,v=+$('#sv').value||1;ST.mode=m;if(m==='nodes')ST.n=Math.max(1000,Math.round(v));else if(m==='depth')ST.d=Math.min(60,Math.max(1,Math.round(v)));else ST.t=Math.min(300,Math.max(.5,v));
-ST.th=Math.min(32,Math.max(1,Math.round(+$('#sth').value||1)));ST.hash=+$('#shs').value;ST.mpv=Math.min(5,Math.max(1,Math.round(+$('#smp').value||1)));saveST();stUI()}
+ST.th=Math.min(256,Math.max(1,Math.round(+$('#sth').value||1)));ST.hash=+$('#shs').value;ST.mpv=Math.min(5,Math.max(1,Math.round(+$('#smp').value||1)));saveST();stUI()}
 const SF={歩:'P',香:'L',桂:'N',銀:'S',角:'B',飛:'R',金:'G',玉:'K'},LP={P:'歩',L:'香',N:'桂',S:'銀',G:'金',B:'角',R:'飛'};
 function toSfen(st,n){const r=[];for(let y=1;y<=9;y++){let t='',e=0;for(let x=9;x>=1;x--){const c=st.b[y][x];if(!c){e++;continue}if(e){t+=e;e=0}let l=SF[U[c.p]||c.p];if(U[c.p])l='+'+l;t+=c.s?l.toLowerCase():l}if(e)t+=e;r.push(t)}
 let h='';for(const s of[0,1])for(const p of'飛角金銀桂香歩'){const k=st.h[s][p]||0;if(k>0)h+=(k>1?k:'')+(s?SF[p].toLowerCase():SF[p])}
@@ -308,7 +312,7 @@ function pvJa(st,pv,n){const o=[];try{for(const u of pv.slice(0,n)){if(!UR.test(
 const dep=n=>{let d=0;for(;n.par;n=n.par)d++;return d};
 const idb=(m,k,v)=>new Promise((ok,ng)=>{const q=indexedDB.open('kifu-en',1);q.onupgradeneeded=()=>q.result.createObjectStore('f');q.onsuccess=()=>{const t=q.result.transaction('f',m),o=t.objectStore('f'),r=m==='readwrite'?o.put(v,k):o.get(k);t.oncomplete=()=>ok(r.result);t.onerror=()=>ng(t.error)};q.onerror=()=>ng(q.error)});
 function syncAN(){if((!AN||AN.node!==cur)&&cur.an&&!(EN.busy&&EN.node===cur))AN={node:cur,lines:{},...cur.an}}
-function rGraph(){const e=$('#ang');if(!e||!g||!cur)return;const ps=path(),N=Math.max(ps.length,20),W=340,H=150,L=30,R=8,X=i=>L+(W-L-R)*i/N,Y=v=>H/2-Math.max(-2000,Math.min(2000,v))/2000*(H/2-10);
+function rGraph(){const e=$('#ang');if(!e||!g||!cur)return;const ps=path(),N=Math.max(ps.length,20),W=Math.max(300,Math.round(e.clientWidth||340)),H=Math.max(110,Math.min(Math.round((innerHeight||800)*.26),Math.round(W*.42))),L=40,R=8,X=i=>L+(W-L-R)*i/N,Y=v=>H/2-Math.max(-2000,Math.min(2000,v))/2000*(H/2-10);
 let d='',pv=false,cv=null;const ci=cur===g.root?0:ps.indexOf(cur)+1;
 ps.forEach((p,i)=>{const A=(AN&&AN.node===p&&AN.sc)?AN:p.an;if(A){const k=getSt(p).side?-1:1,sc=A.sc,v=sc.mate!=null?(sc.mate*k>0?2000:-2000):sc.cp*k;d+=(pv?'L':'M')+X(i+1).toFixed(1)+' '+Y(v).toFixed(1);pv=true;if(i+1===ci)cv=v}else pv=false});
 let gr='';[-2000,-1000,0,1000,2000].forEach(v=>{gr+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}"/><text class="gt" x="2" y="${Y(v)+3}">${v}</text>`});
@@ -344,12 +348,21 @@ function allNodes(){const a=[],f=n=>n.ch.forEach(c=>{if(!c.sg){a.push(c);f(c)}})
 function batchRun(list,force){const ps=(force?list:list.filter(n=>!n.an)).filter(n=>!n.sg);if(!ps.length){toast('解析する手がありません');return}EN.origin=cur;EN.batch=ps.slice();EN.bN=ps.length;EN.bForce=force;EN.off=false;nextB()}
 function batchStop(){EN.batch=null;if(EN.busy){EN.skip=true;EN.yn.postMessage('stop')}if(EN.origin){cur=EN.origin;EN.origin=null}rGame()}
 function batchMenu(){if(!EN.ready){toast('エンジンを起動してください');return}if(EN.batch){batchStop();return}
-sheet([['この変化：未解析のみ',()=>batchRun(path(),false)],['この変化：すべて（再解析）',()=>batchRun(path(),true)],['全分岐：未解析のみ',()=>batchRun(allNodes(),false)],['全分岐：すべて（再解析）',()=>batchRun(allNodes(),true)]])}
+sheet([['この局面から：すべて（再解析）',()=>batchFrom(true)],['この局面から：未解析のみ',()=>batchFrom(false)],['この変化：未解析のみ',()=>batchRun(path(),false)],['この変化：すべて（再解析）',()=>batchRun(path(),true)],['全分岐：未解析のみ',()=>batchRun(allNodes(),false)],['全分岐：すべて（再解析）',()=>batchRun(allNodes(),true)]])}
 document.addEventListener('keydown',e=>{if(view!=='game'||/INPUT|TEXTAREA|SELECT/.test((e.target||{}).tagName||''))return;
 if(PVW){if(e.key==='ArrowLeft')pvStep(-1);else if(e.key==='ArrowRight')pvStep(1);else if(e.key==='Escape')pvEnd();else return;e.preventDefault();return}
 const mv=n=>{if(n){cur=n;sel=null;HOLD=false;rGame()}};
 if(e.key==='ArrowLeft')mv(cur.par);else if(e.key==='ArrowRight')mv(cur.ch.find(c=>!c.sg)||cur.ch[0]);
 else if(e.key==='ArrowUp'){let n=cur;for(let i=0;i<10&&n.par;i++)n=n.par;mv(n)}else if(e.key==='ArrowDown'){let n=cur;for(let i=0;i<10&&(n.ch[0]);i++)n=n.ch[0];mv(n)}else return;e.preventDefault()});
+function batchFrom(force){if(!EN.ready){toast('エンジンを起動してください');return}if(EN.batch){batchStop();return}const ps=path(),i=ps.indexOf(cur);batchRun(i<0?ps:ps.slice(i),force)}
+function aiDlg(){const o=document.createElement('div');o.className='ov';const s=document.createElement('div');s.className='sh';s.style.cssText='max-height:85vh;overflow:auto';
+s.innerHTML=`<div style="font-weight:700;padding:15px 22px">AI設定</div><div class="st" style="padding:0 12px"><label>探索方式<span><select id="sm"><option value="infinite">無制限</option><option value="movetime">時間(秒)</option><option value="nodes">ノード数</option><option value="depth">深さ</option></select> <input type="number" id="sv" min="1"></span></label><label>スレッド数<input type="number" id="sth" min="1" max="256"></label><label>ハッシュ(MB)<select id="shs">${[16,32,64,128,256,512,1024,2048,4096,8192,16384,32768].map(v=>'<option>'+v+'</option>').join('')}</select></label><label>候補手数(MultiPV)<input type="number" id="smp" min="1" max="5"></label><div style="color:var(--sub);font-size:12px;padding:6px 10px">この端末の論理コア数: ${navigator.hardwareConcurrency||'不明'}。「適用」で反映されます（解析中でも再起動は不要です）。</div></div><div class="ok" id="sap">適用</div><div id="srs" style="color:var(--sub)">初期値に戻す</div>`;
+o.append(s);o.onclick=e=>{if(e.target===o)o.remove()};document.body.append(o);stUI();
+$('#sm').onchange=()=>{ST.mode=$('#sm').value;saveST();stUI()};
+$('#sap').onclick=()=>{stRead();o.remove();applyOpts();toast('設定を保存しました')};
+$('#srs').onclick=()=>{Object.assign(ST,DEF());ST.v=2;saveST();stUI();applyOpts()}}
+$('#ai').onclick=aiDlg;
+let RT=null;window.addEventListener('resize',()=>{clearTimeout(RT);RT=setTimeout(()=>{if(view==='game')rGame()},150)});
 function nextB(){if(!EN.batch||!EN.batch.length){EN.batch=null;if(EN.origin){cur=EN.origin;EN.origin=null}rGame();return}const n=EN.batch.shift();if(EN.bForce)delete n.an;cur=n;EN.last=n;sel=null;analyze();rGame()}
 function bmCls(x,y){return''}
 function onLine(l){if(l.startsWith('option name')&&EN.optsRaw)EN.optsRaw.push(l);if(l.startsWith('id name'))EN.idn=l;if(!l.startsWith('info depth')){EN.log.push(l);if(EN.log.length>30)EN.log.shift()}if(EN.w)EN.w(l);
@@ -360,10 +373,11 @@ if(ok&&AN&&AN.node===EN.node&&AN.sc&&(!EN.pend||dn>=12)&&(!EN.node.an||dn>=+EN.n
 if(EN.opt){EN.opt=false;optNow();if(EN.batch)EN.batch.unshift(EN.node)}
 if(EN.batch&&!EN.pend){nextB();return}
 if(EN.pend)run();else rGame()}}
-function run(){EN.pend=false;EN.busy=true;EN.node=cur;AN=null;EN.yn.postMessage('position sfen '+toSfen(getSt(cur),dep(cur)+1));EN.yn.postMessage(goCmd());rAnr()}
+function run(){EN.pend=false;EN.busy=true;EN.t0=Date.now();EN.node=cur;AN=null;EN.yn.postMessage('position sfen '+toSfen(getSt(cur),dep(cur)+1));EN.yn.postMessage(goCmd());rAnr()}
 function analyze(){if(!EN.ready)return;if(EN.busy){EN.pend=true;EN.yn.postMessage('stop');return}run()}
 function anSoon(){clearTimeout(EN.tm);EN.tm=setTimeout(analyze,250)}
 const evW=v=>{const a=Math.abs(v);if(a<100)return'互角';return(v>0?'先手':'後手')+(a<300?'やや有利':a<700?'有利':a<1500?'優勢':'勝勢')};
+const evS=(sc,k)=>{if(sc.mate!=null)return(sc.mate*k>0?'先手':'後手')+Math.abs(sc.mate)+'手詰';const v=sc.cp*k;return evW(v)+'('+v+')'};
 const evT=(sc,k)=>sc.mate!=null?(sc.mate*k>0?'先手':'後手')+Math.abs(sc.mate)+'手詰':(sc.cp*k>0?'+':'')+sc.cp*k;
 function rAnr(nog){const e=$('#anr');if(!e)return;if(!nog)rGraph();
 const bb=$('#enB');if(bb)bb.textContent=EN.batch?'中止（'+(EN.bN-EN.batch.length)+'/'+EN.bN+'）':'まとめて解析…';const sb=$('#enS');if(sb)sb.textContent=EN.batch?'中止':EN.off?'再開':'停止';
@@ -371,10 +385,10 @@ if(!EN.ready){e.innerHTML='<p style="color:var(--sub)">エンジンが未起動�
 const st=getSt(cur),k=st.side?-1:1,A=(AN&&AN.node===cur&&AN.sc)?AN:null;let h='';
 if(!A)h+='<p style="color:var(--sub)">'+(EN.busy?'解析中…':'解析待ち')+'</p>';
 else{const v=A.sc.mate!=null?(A.sc.mate*k>0?1e4:-1e4):A.sc.cp*k,s=A.stt||{},n=Math.max(ST.mpv,3);
-h+=`<div style="display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline"><b style="font-size:20px">${evW(v)}（${evT(A.sc,k)}）</b><span>深さ ${A.depth}${EN.busy?' 解析中…':''}</span>${s.time!=null?`<span>時間 ${(s.time/1000).toFixed(1)}s</span><span>ノード ${(s.nodes||0).toLocaleString()}</span><span>NPS ${Math.round((s.nps||0)/1000)}k</span>`:''}<span>スレッド ${ST.th}</span>${EN.idn?`<span style="color:var(--sub)">${esc(EN.idn.slice(8))}</span>`:''}</div>`;
+h+=`<div style="display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline"><b style="font-size:20px">${evS(A.sc,k)}</b><span>深さ ${A.depth}${EN.busy?' 解析中…':''}</span><span>時間 ${(((s.time||(EN.busy&&EN.node===cur?Date.now()-EN.t0:0))/1000)).toFixed(1)}s</span><span>ノード ${s.nodes?s.nodes.toLocaleString():'-'}</span><span>NPS ${s.nps?Math.round(s.nps/1000)+'k':'-'}</span><span>スレッド ${ST.th}</span>${EN.idn?`<span style="color:var(--sub)">${esc(EN.idn.slice(8))}</span>`:''}</div>`;
 h+='<table class="atb"><tr style="color:var(--sub)"><td>順位</td><td>評価値</td><td>候補手</td><td>読み筋（タップでプレビュー）</td><td></td></tr>';
-for(let i=1;i<=n;i++){const L=(A.lines&&A.lines[i])||(i===1?{sc:A.sc,pv:A.pv}:null);if(!L)continue;const q=pvJa(st,L.pv||[],10);
-h+=`<tr class="arow" data-i="${i}"><td style="color:${['#e53935','#fb8c00','#1e88e5'][i-1]||'inherit'};font-weight:700">${['最善','次善'][i-1]||i}</td><td>${evT(L.sc,k)}</td><td>${esc(q[0]||'-')}</td><td class="pv">${esc(q.slice(1).join(' '))}</td><td><button class="ab ap" data-i="${i}">＋</button></td></tr>`}
+for(let i=1;i<=n;i++){const L=(A.lines&&A.lines[i])||(i===1?{sc:A.sc,pv:A.pv}:null);if(!L){h+=`<tr><td style="color:var(--sub)">${['最善','次善'][i-1]||i}</td><td colspan="4" style="color:var(--sub)">…</td></tr>`;continue}const q=pvJa(st,L.pv||[],10);
+h+=`<tr class="arow" data-i="${i}"><td style="color:${['#e53935','#fb8c00','#1e88e5'][i-1]||'inherit'};font-weight:700">${['最善','次善'][i-1]||i}</td><td>${evS(L.sc,k)}</td><td>${esc(q[0]||'-')}</td><td class="pv">${esc(q.slice(1).join(' '))}</td><td><button class="ab ap" data-i="${i}">＋</button></td></tr>`}
 h+='</table>'}
 if(PVW)h+=`<div class="card">プレビュー中（${PVW.k}/${PVW.pv.length}）<button class="ab" id="pv1">◀</button><button class="ab" id="pv2">▶</button><button class="ab" id="pv3">棋譜に追加</button><button class="ab" id="pv4">終了</button></div>`;
 const sg=sgRoot();if(sg){let c=0;const f=x=>{c++;x.ch.forEach(f)};f(sg);h+=`<div class="card sgc">解析の提案: <b>${esc(sg.lab)}</b> から${c}手の変化（緑色）を棋譜に追加しますか？<br><button class="ab" id="sg1">追加する</button><button class="ab" id="sg2">破棄</button></div>`}
@@ -417,8 +431,8 @@ if(nn&&(NAT||!/noeval/.test(EN.url))){}else if(nn){if(yn.FS&&yn.FS.writeFile){tr
 const mem=navigator.deviceMemory||4;say('オプション設定中…');P('setoption name USI_Hash value '+ST.hash);P('setoption name PvInterval value 0');P('setoption name Threads value '+ST.th);if(ST.mpv>1)P('setoption name MultiPV value '+ST.mpv);
 say('評価関数を読み込み中（isready）…');w=W('readyok');P('isready');await w;EN.ready=true;EN.last=null;o.textContent='起動済み（評価関数: '+EN.src+'）'+(EN.idn?'\n'+EN.idn:'');rGame()}catch(e){console.error(e);say('エラー: '+(e.message||e)+'\n[停止した段階: '+stg+']'+(EN.log.length?'\n--- エンジンの出力 ---\n'+EN.log.slice(-8).join('\n'):''))}}
 window.addEventListener('unhandledrejection',e=>{const o=$('#ens'),m=String(e.reason&&e.reason.message||e.reason);if(o&&/exit|terminated|abort/i.test(m))o.textContent='エンジンが停止しました: '+m+(EN.log.length?'\n--- エンジンの出力 ---\n'+EN.log.slice(-8).join('\n'):'')});
-function anInit(){$('#anc').innerHTML=''+(window.nativeEngine?'<div id="enr"><select id="ens2" style="max-width:55%;font-size:13px"></select> <button class="ab" id="ea">追加</button><button class="ab" id="er">名前変更</button><button class="ab" id="ed">削除</button><button class="ab" id="eo">エンジン設定</button></div>':'')+'<button class="ab" id="enb">エンジン起動</button><label class="ab">評価関数(nn.bin)を選ぶ<input type="file" id="enf" hidden></label><div id="ens" style="margin:6px 0;color:var(--sub)"></div><details style="margin:6px 0"><summary>AI設定</summary><div class="st"><label>探索方式<span><select id="sm"><option value="infinite">無制限</option><option value="movetime">時間(秒)</option><option value="nodes">ノード数</option><option value="depth">深さ</option></select> <input type="number" id="sv" min="1"></span></label><label>スレッド数<input type="number" id="sth" min="1" max="32"></label><label>ハッシュ(MB)<select id="shs"><option>16</option><option>32</option><option>64</option><option>128</option><option>256</option><option>512</option><option>1024</option><option>2048</option><option>4096</option><option>8192</option><option>16384</option><option>32768</option></select></label><label>候補手数(MultiPV)<input type="number" id="smp" min="1" max="5"></label><button class="ab" id="sap">設定を適用</button><button class="ab" id="srs">初期値に戻す</button><div style="color:var(--sub)">この端末の論理コア数: '+(navigator.hardwareConcurrency||'不明')+'。スレッドを増やすと発熱・電池消費が増えます。</div></div></details><div><label><input type="checkbox" id="ena" checked>自動解析</label> <label><input type="checkbox" id="enq" checked>解析の提案を棋譜に加える</label><br><button class="ab" id="enS">停止</button><button class="ab" id="en1">この局面を再解析</button><button class="ab" id="enB">まとめて解析…</button></div>';
-$('#enb').onclick=enStart;if(window.nativeEngine)engInit();stUI();$('#sm').onchange=()=>{ST.mode=$('#sm').value;saveST();stUI()};$('#sap').onclick=()=>{stRead();applyOpts();toast('設定を保存しました')};$('#srs').onclick=()=>{Object.assign(ST,DEF());saveST();stUI();applyOpts()};$('#ena').onchange=e=>{EN.auto=e.target.checked};$('#en1').onclick=()=>{if(!EN.ready)return toast('エンジンを起動してください');delete cur.an;AN=null;EN.off=false;EN.last=cur;analyze();rGame()};$('#enB').onclick=batchMenu;$('#enq').onchange=e=>{EN.sug=e.target.checked};$('#enS').onclick=()=>{if(!EN.ready)return;if(EN.batch){batchStop();return}if(EN.busy){EN.off=true;EN.yn.postMessage('stop')}else{EN.off=false;EN.last=null;autoTrig()}rAnr()};
+function anInit(){$('#anc').innerHTML=''+(window.nativeEngine?'<div id="enr"><select id="ens2" style="max-width:55%;font-size:13px"></select> <button class="ab" id="ea">追加</button><button class="ab" id="er">名前変更</button><button class="ab" id="ed">削除</button><button class="ab" id="eo">エンジン設定</button></div>':'')+'<button class="ab" id="enb">エンジン起動</button><label class="ab">評価関数(nn.bin)を選ぶ<input type="file" id="enf" hidden></label><div id="ens" style="margin:6px 0;color:var(--sub)"></div><div><label><input type="checkbox" id="ena" checked>自動解析</label> <label><input type="checkbox" id="enq" checked>解析の提案を棋譜に加える</label><br><button class="ab" id="enS">停止</button><button class="ab" id="en1">この局面を再解析</button><button class="ab" id="enF">この局面から解析</button><button class="ab" id="enB">まとめて解析…</button></div>';
+$('#enb').onclick=enStart;if(window.nativeEngine)engInit();$('#ena').onchange=e=>{EN.auto=e.target.checked};$('#en1').onclick=()=>{if(!EN.ready)return toast('エンジンを起動してください');delete cur.an;AN=null;EN.off=false;EN.last=cur;analyze();rGame()};$('#enB').onclick=batchMenu;$('#enF').onclick=()=>batchFrom(true);$('#enq').onchange=e=>{EN.sug=e.target.checked};$('#enS').onclick=()=>{if(!EN.ready)return;if(EN.batch){batchStop();return}if(EN.busy){EN.off=true;EN.yn.postMessage('stop')}else{EN.off=false;EN.last=null;autoTrig()}rAnr()};
 $('#enf').onchange=async e=>{const f=e.target.files[0];if(!f)return;$('#ens').textContent='保存中…';try{await idb('readwrite','nn',await f.arrayBuffer());$('#ens').textContent=f.name+'（'+(f.size/1048576).toFixed(1)+'MB）を保存しました。エンジンを（再）起動してください。'}catch(x){$('#ens').textContent='保存失敗: '+x.message}};rAnr()}
 anInit();
 window.onLogin=(u,sh)=>{cdb=sh;cuid=u.uid;window.fbUser=u.displayName||u.email||'';sync()};
