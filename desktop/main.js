@@ -1,9 +1,7 @@
-const {app,BrowserWindow,ipcMain,dialog,shell}=require('electron');
+const {app,BrowserWindow,ipcMain,dialog,shell,safeStorage}=require('electron');
 const http=require('http');
 const {spawn}=require('child_process');const fs=require('fs'),path=require('path'),crypto=require('crypto');
-// ▼ Google Cloud コンソールで作成した「デスクトップ アプリ」の OAuth クライアント（ログイン用）
-const G_CLIENT_ID='1010314509906-23646ki1gcho3blb46hmq3qtr5pfmith.apps.googleusercontent.com',G_CLIENT_SECRET='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';
-const SITE='https://potatosalad-san.github.io/Shogi-analyzer-for-pc/'; // ← 自分のGitHub PagesのURLに合わせる
+const SITE='https://potatosalad-san.github.io/Shogi-Analyzer/'; // ← 自分のGitHub PagesのURLに合わせる
 const cfg=()=>path.join(app.getPath('userData'),'engine.json');
 function rd(){let c={};try{c=JSON.parse(fs.readFileSync(cfg(),'utf8'))}catch(e){}
   if(!c.engines)c.engines=c.path?[{id:crypto.randomUUID(),name:path.basename(c.path).replace(/\.exe$/i,''),path:c.path}]:[];
@@ -39,10 +37,15 @@ ipcMain.handle('eng:start',async e=>{if(!ok(e))return{ok:false,error:'権限が�
   p.on('error',err=>send('info string spawn error '+err.message));
   return{ok:true,path:x.path,id:x.id,name:x.name}});
 ipcMain.on('eng:send',(e,t)=>{if(ok(e)&&proc&&typeof t==='string')proc.stdin.write(t+'\n')});
+// OAuthクライアントID/シークレットはリポジトリに書かない。優先順: 環境変数 G_CLIENT_ID / G_CLIENT_SECRET → この端末に暗号化保存した値 → 初回入力
+const oauthFile=()=>path.join(app.getPath('userData'),'oauth.bin');
+function loadOAuth(){if(process.env.G_CLIENT_ID&&process.env.G_CLIENT_SECRET)return{id:process.env.G_CLIENT_ID.trim(),secret:process.env.G_CLIENT_SECRET.trim()};try{const b=fs.readFileSync(oauthFile());return JSON.parse(safeStorage.isEncryptionAvailable()?safeStorage.decryptString(b):b.toString('utf8'))}catch(e){return null}}
+function saveOAuth(o){const t=JSON.stringify(o);fs.writeFileSync(oauthFile(),safeStorage.isEncryptionAvailable()?safeStorage.encryptString(t):Buffer.from(t))}
+ipcMain.handle('auth:set',(e,id,secret)=>{if(!ok(e)||typeof id!=='string'||typeof secret!=='string'||!id.trim()||!secret.trim())return false;saveOAuth({id:id.trim(),secret:secret.trim()});return true});
 const b64u=b=>b.toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 // Googleログイン: 既定のブラウザで認証し、ループバック(127.0.0.1)で認可コードを受け取る（PKCE）
 ipcMain.handle('auth:google',e=>{if(!ok(e))return{ok:false,error:'権限がありません'};
-  if(G_CLIENT_ID.startsWith('YOUR'))return{ok:false,error:'main.js の G_CLIENT_ID / G_CLIENT_SECRET が未設定です'};
+  const oc=loadOAuth();if(!oc)return{ok:false,need:true,error:'クライアントIDとシークレットが未設定です'};
   return new Promise(resolve=>{
     const ver=b64u(crypto.randomBytes(32)),chal=b64u(crypto.createHash('sha256').update(ver).digest()),state=b64u(crypto.randomBytes(16));
     let done=false;const fin=r=>{if(done)return;done=true;clearTimeout(tm);srv.close();resolve(r)};
@@ -52,11 +55,11 @@ ipcMain.handle('auth:google',e=>{if(!ok(e))return{ok:false,error:'権限があ�
       res.end('<meta charset="utf-8"><body style="font-family:sans-serif;padding:2em"><h2>'+(code?'ログインしました':'ログインできませんでした')+'</h2><p>このタブを閉じて、アプリに戻ってください。</p>');
       if(u.searchParams.get('state')!==state||!code)return fin({ok:false,error:err||'認可コードを受け取れませんでした'});
       try{const r=await fetch('https://oauth2.googleapis.com/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body:new URLSearchParams({code,client_id:G_CLIENT_ID,client_secret:G_CLIENT_SECRET,code_verifier:ver,grant_type:'authorization_code',redirect_uri:'http://127.0.0.1:'+srv.address().port})});
+        body:new URLSearchParams({code,client_id:oc.id,client_secret:oc.secret,code_verifier:ver,grant_type:'authorization_code',redirect_uri:'http://127.0.0.1:'+srv.address().port})});
         const j=await r.json();if(!j.id_token)return fin({ok:false,error:j.error_description||j.error||'トークン取得に失敗しました'});
         fin({ok:true,idToken:j.id_token,accessToken:j.access_token})}catch(x){fin({ok:false,error:x.message})}});
     const tm=setTimeout(()=>fin({ok:false,error:'タイムアウト（3分）'}),180000);
-    srv.listen(0,'127.0.0.1',()=>{shell.openExternal('https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:G_CLIENT_ID,redirect_uri:'http://127.0.0.1:'+srv.address().port,response_type:'code',scope:'openid email profile',code_challenge:chal,code_challenge_method:'S256',state,prompt:'select_account'}))});
+    srv.listen(0,'127.0.0.1',()=>{shell.openExternal('https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:oc.id,redirect_uri:'http://127.0.0.1:'+srv.address().port,response_type:'code',scope:'openid email profile',code_challenge:chal,code_challenge_method:'S256',state,prompt:'select_account'}))});
   })});
 app.whenReady().then(createWindow);
 app.on('window-all-closed',()=>{if(proc)proc.kill();app.quit()});
