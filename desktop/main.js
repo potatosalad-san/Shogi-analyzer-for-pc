@@ -1,7 +1,9 @@
 const {app,BrowserWindow,ipcMain,dialog,shell}=require('electron');
 const http=require('http');
 const {spawn}=require('child_process');const fs=require('fs'),path=require('path'),crypto=require('crypto');
-const SITE='https://potatosalad-san.github.io/Shogi-Analyzer/'; // ← 自分のGitHub PagesのURLに合わせる
+// 公開サイトのURL: ビルド時に GitHub Actions が site.json（リポジトリ名から自動生成）を作る。無い場合は下の値を使う。
+let SITE='https://potatosalad-san.github.io/Shogi-analyzer-for-pc/';
+try{SITE=require('./site.json').url}catch(e){}
 const cfg=()=>path.join(app.getPath('userData'),'engine.json');
 function rd(){let c={};try{c=JSON.parse(fs.readFileSync(cfg(),'utf8'))}catch(e){}
   if(!c.engines)c.engines=c.path?[{id:crypto.randomUUID(),name:path.basename(c.path).replace(/\.exe$/i,''),path:c.path}]:[];
@@ -15,6 +17,8 @@ function createWindow(){
   win.webContents.setUserAgent(win.webContents.getUserAgent().replace(/ Electron\/[\d.]+/,'').replace(/ shogi-?analyzer\/[\d.]+/i,''));
   win.webContents.on('will-navigate',(ev,url)=>{if(!url.startsWith(SITE)){ev.preventDefault();shell.openExternal(url)}});
   win.webContents.setWindowOpenHandler(({url})=>{shell.openExternal(url);return{action:'deny'}});
+  win.webContents.on('did-fail-load',(ev,code,desc,url,isMain)=>{if(isMain)dialog.showErrorBox('サイトを開けません','アドレス: '+url+'\n原因: '+desc+'\n\ndesktop/main.js の SITE を確認してください。')});
+  win.webContents.on('did-fail-load',(ev,code,desc,url,isMain)=>{if(isMain)win.loadURL('data:text/html;charset=utf-8,'+encodeURIComponent('<meta charset="utf-8"><body style="font-family:sans-serif;padding:2em"><h3>サイトを開けません</h3><p>'+url+'</p><p>'+desc+'</p><p>desktop/main.js の SITE（または site.json）のURLを確認してください。</p>'))});
   win.setMenuBarVisibility(false);win.loadURL(SITE);
 }
 ipcMain.handle('eng:list',e=>ok(e)?pub(rd()):{engines:[],active:null});
@@ -41,7 +45,7 @@ const b64u=b=>b.toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace
 // Googleログイン（シークレット不要）: 既定のブラウザでGoogle認証し、localhost経由でIDトークンだけを受け取る。
 // 使うのは公開されても問題のない「ウェブ クライアントID」のみ。秘密情報はアプリにもリポジトリにも含まれない。
 const PORT=53682; // Google Cloud の「承認済みのリダイレクト URI」に http://localhost:53682/ を登録しておく
-ipcMain.handle('auth:google',(e,clientId)=>{if(!ok(e))return{ok:false,error:'権限がありません'};
+ipcMain.handle('auth:google',(e,clientId)=>{if(!ok(e))return{ok:false,error:'権限がありません。アプリが開いているアドレス: '+(e.senderFrame&&e.senderFrame.url)+' / 許可しているアドレス: '+SITE};
   if(typeof clientId!=='string'||!/\.apps\.googleusercontent\.com$/.test(clientId))return{ok:false,error:'クライアントIDが正しくありません'};
   return new Promise(resolve=>{
     const raw=b64u(crypto.randomBytes(24)),nonce=crypto.createHash('sha256').update(raw).digest('hex'),state=b64u(crypto.randomBytes(16));
