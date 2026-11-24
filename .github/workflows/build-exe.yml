@@ -11,6 +11,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Write site URL
+        shell: bash
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"; REPO="${GITHUB_REPOSITORY#*/}"
+          echo "{\"url\":\"https://${OWNER}.github.io/${REPO}/\"}" > site.json
+          cat site.json
       - run: npm install
       - run: npx electron-builder --win portable --publish never
       - uses: actions/upload-artifact@v4
