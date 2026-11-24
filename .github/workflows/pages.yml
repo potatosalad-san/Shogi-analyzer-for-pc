@@ -1,0 +1,38 @@
+name: deploy-pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.dep.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject config (secrets are not stored in the repository)
+        env:
+          FB_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FB_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FB_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FB_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          G_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+        run: |
+          mkdir dist
+          cp index.html coi-sw.js dist/
+          [ -d engine ] && cp -r engine dist/ || true
+          [ -d fonts ] && cp -r fonts dist/ || true
+          sed -i "s|__FIREBASE_API_KEY__|${FB_API_KEY}|g; s|__FIREBASE_AUTH_DOMAIN__|${FB_AUTH_DOMAIN}|g; s|__FIREBASE_PROJECT_ID__|${FB_PROJECT_ID}|g; s|__FIREBASE_APP_ID__|${FB_APP_ID}|g; s|__GOOGLE_CLIENT_ID__|${G_CLIENT_ID}|g" dist/index.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: dep
+        uses: actions/deploy-pages@v4
