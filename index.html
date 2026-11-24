@@ -441,10 +441,10 @@ render();sync();
 </script>
 <script type="module">
 // ▼▼ Firebaseコンソール「プロジェクトの設定 > マイアプリ(ウェブ)」の値を貼り付け ▼▼
-const GOOGLE_CLIENT_ID="903105242625-vsa4skqpk73a02t01gi96cga0fmd8ufh.apps.googleusercontent.com"; // Firebase > Authentication > Google > Web SDK設定 の「ウェブ クライアント ID」
-const firebaseConfig={apiKey:"AIzaSyCOLXcu051hP9jxD5dTrQlR5Y4X2h_o6-w",authDomain:"shogi-analyzer-new-ver-4c2d4.firebaseapp.com",projectId:"shogi-analyzer-new-ver-4c2d4",appId:"1:903105242625:web:af6d2b0e1e0b6ea0c0c200"};
+const GOOGLE_CLIENT_ID="__GOOGLE_CLIENT_ID__"; // 公開してよい値。デプロイ時にGitHub Actionsが差し込む // Firebase > Authentication > Google > Web SDK設定 の「ウェブ クライアント ID」
+const firebaseConfig={apiKey:"__FIREBASE_API_KEY__",authDomain:"__FIREBASE_AUTH_DOMAIN__",projectId:"__FIREBASE_PROJECT_ID__",appId:"__FIREBASE_APP_ID__"};
 // ▲▲▲
-if(!firebaseConfig.apiKey.startsWith('YOUR')){
+if(!/^(YOUR|__)/.test(firebaseConfig.apiKey)){
 const V='10.14.1',B='https://www.gstatic.com/firebasejs/'+V+'/';
 const {initializeApp}=await import(B+'firebase-app.js');
 const {getAuth,OAuthProvider,GoogleAuthProvider,signInWithCredential,signOut,onAuthStateChanged}=await import(B+'firebase-auth.js');
