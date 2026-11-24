@@ -14,7 +14,8 @@
     "productName": "ShogiAnalyzer",
     "files": [
       "main.js",
-      "preload.js"
+      "preload.js",
+      "site.json"
     ],
     "win": {
       "target": "portable"
