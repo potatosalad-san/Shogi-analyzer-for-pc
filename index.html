@@ -102,6 +102,23 @@ body{max-width:none}
 /* ---- 解析モード v3 ---- */
 .gt{font-size:11px}
 #game.am #bw{align-self:start;margin-top:6px}
+/* ---- レイアウト v4 ---- */
+#bw{--cs:30px}
+.hand{width:calc(var(--cs)*1.15)}
+.hp{padding:1px 0 1px 2px!important}
+.hp .pc{width:calc(var(--cs)*.92)!important;height:calc(var(--cs)*1.02)!important;font-size:calc(var(--cs)*.4)!important}
+.cnt{font-size:calc(var(--cs)*.4);left:-3px}
+#an{display:flex;flex-direction:column;overflow:auto}
+#ang{order:0;flex:none}#anc{order:1;flex:none}#anr{order:2;flex:none}
+.atb{table-layout:fixed}.atb td.pv{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ah{min-height:44px}
+@media(min-width:820px) and (min-height:560px) and (orientation:landscape){
+#game.am{grid-template-columns:minmax(420px,44vw) minmax(0,1fr)}
+#game.am #bw{max-width:100%;overflow:hidden;align-self:start;margin-top:6px}
+#game.am #bd{max-width:none;width:min(calc(100dvh - 150px),calc((max(420px,44vw) - 24px)*.78))}
+#an{overflow:hidden}
+#anr{flex:1;min-height:0;overflow:auto}
+}
 </style><script>
 if(!self.crossOriginIsolated&&'serviceWorker' in navigator&&location.protocol==='https:'){const n=+sessionStorage.getItem('coi')||0,rl=()=>{if(n<3){sessionStorage.setItem('coi',n+1);location.reload()}};
 navigator.serviceWorker.addEventListener('controllerchange',rl);
@@ -222,7 +239,7 @@ xs.forEach(x=>{const l=document.createElement('div');l.className='lb';l.textCont
 ys.forEach(y=>{xs.forEach(x=>{const c=document.createElement('div'),p=st.b[y][x];c.className='c'+(st.last&&st.last[0]==x&&st.last[1]==y?' l':'')+(sel&&sel.x==x&&sel.y==y?' sl':'')+bmCls(x,y);
 if(p)c.append(pcEl(p.p,p.s,(p.s===1)!==flip));
 c.onclick=()=>tap(x,y);bd.append(c)});const l=document.createElement('div');l.className='lb';l.textContent=RK[y-1];bd.append(l)});
-rHand(0);rHand(1);if(!PVW)drawArrows();
+{const w=bd.clientWidth;if(w)$('#bw').style.setProperty('--cs',((w-14)/9)+'px')}rHand(0);rHand(1);if(!PVW)drawArrows();
 const ml=$('#ml');ml.innerHTML='';const ps=path();
 const st0=document.createElement('div');st0.className='mv'+(cur===g.root?' cu':'');st0.innerHTML='<span>開始局面</span>';st0.onclick=()=>{cur=g.root;sel=null;rGame()};ml.append(st0);
 ps.forEach((n,i)=>{const d=document.createElement('div');d.className='mv'+(n===cur?' cu':'')+(n.sg?' sg':'');const sp=document.createElement('span');sp.textContent=(i+1)+'. '+n.lab;d.append(sp);
@@ -312,7 +329,7 @@ function pvJa(st,pv,n){const o=[];try{for(const u of pv.slice(0,n)){if(!UR.test(
 const dep=n=>{let d=0;for(;n.par;n=n.par)d++;return d};
 const idb=(m,k,v)=>new Promise((ok,ng)=>{const q=indexedDB.open('kifu-en',1);q.onupgradeneeded=()=>q.result.createObjectStore('f');q.onsuccess=()=>{const t=q.result.transaction('f',m),o=t.objectStore('f'),r=m==='readwrite'?o.put(v,k):o.get(k);t.oncomplete=()=>ok(r.result);t.onerror=()=>ng(t.error)};q.onerror=()=>ng(q.error)});
 function syncAN(){if((!AN||AN.node!==cur)&&cur.an&&!(EN.busy&&EN.node===cur))AN={node:cur,lines:{},...cur.an}}
-function rGraph(){const e=$('#ang');if(!e||!g||!cur)return;const ps=path(),N=Math.max(ps.length,20),W=Math.max(300,Math.round(e.clientWidth||340)),H=Math.max(110,Math.min(Math.round((innerHeight||800)*.26),Math.round(W*.42))),L=40,R=8,X=i=>L+(W-L-R)*i/N,Y=v=>H/2-Math.max(-2000,Math.min(2000,v))/2000*(H/2-10);
+function rGraph(){const e=$('#ang');if(!e||!g||!cur)return;const ps=path(),N=Math.max(ps.length,20),W=Math.max(300,Math.round(e.clientWidth||340)),H=Math.max(100,Math.min(Math.round((innerHeight||800)*.17),Math.round(W*.24))),L=40,R=8,X=i=>L+(W-L-R)*i/N,Y=v=>H/2-Math.max(-2000,Math.min(2000,v))/2000*(H/2-10);
 let d='',pv=false,cv=null;const ci=cur===g.root?0:ps.indexOf(cur)+1;
 ps.forEach((p,i)=>{const A=(AN&&AN.node===p&&AN.sc)?AN:p.an;if(A){const k=getSt(p).side?-1:1,sc=A.sc,v=sc.mate!=null?(sc.mate*k>0?2000:-2000):sc.cp*k;d+=(pv?'L':'M')+X(i+1).toFixed(1)+' '+Y(v).toFixed(1);pv=true;if(i+1===ci)cv=v}else pv=false});
 let gr='';[-2000,-1000,0,1000,2000].forEach(v=>{gr+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}"/><text class="gt" x="2" y="${Y(v)+3}">${v}</text>`});
@@ -385,10 +402,10 @@ if(!EN.ready){e.innerHTML='<p style="color:var(--sub)">エンジンが未起動�
 const st=getSt(cur),k=st.side?-1:1,A=(AN&&AN.node===cur&&AN.sc)?AN:null;let h='';
 if(!A)h+='<p style="color:var(--sub)">'+(EN.busy?'解析中…':'解析待ち')+'</p>';
 else{const v=A.sc.mate!=null?(A.sc.mate*k>0?1e4:-1e4):A.sc.cp*k,s=A.stt||{},n=Math.max(ST.mpv,3);
-h+=`<div style="display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline"><b style="font-size:20px">${evS(A.sc,k)}</b><span>深さ ${A.depth}${EN.busy?' 解析中…':''}</span><span>時間 ${(((s.time||(EN.busy&&EN.node===cur?Date.now()-EN.t0:0))/1000)).toFixed(1)}s</span><span>ノード ${s.nodes?s.nodes.toLocaleString():'-'}</span><span>NPS ${s.nps?Math.round(s.nps/1000)+'k':'-'}</span><span>スレッド ${ST.th}</span>${EN.idn?`<span style="color:var(--sub)">${esc(EN.idn.slice(8))}</span>`:''}</div>`;
-h+='<table class="atb"><tr style="color:var(--sub)"><td>順位</td><td>評価値</td><td>候補手</td><td>読み筋（タップでプレビュー）</td><td></td></tr>';
+h+=`<div class="ah" style="display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline"><b style="font-size:20px">${evS(A.sc,k)}</b><span>深さ ${A.depth}${EN.busy?' 解析中…':''}</span><span>時間 ${(((s.time||(EN.busy&&EN.node===cur?Date.now()-EN.t0:0))/1000)).toFixed(1)}s</span><span>ノード ${s.nodes?s.nodes.toLocaleString():'-'}</span><span>NPS ${s.nps?Math.round(s.nps/1000)+'k':'-'}</span><span>スレッド ${ST.th}</span>${EN.idn?`<span style="color:var(--sub)">${esc(EN.idn.slice(8))}</span>`:''}</div>`;
+h+='<table class="atb"><colgroup><col style="width:11%"><col style="width:22%"><col style="width:17%"><col><col style="width:46px"></colgroup><tr style="color:var(--sub)"><td>順位</td><td>評価値</td><td>候補手</td><td>読み筋（タップでプレビュー）</td><td></td></tr>';
 for(let i=1;i<=n;i++){const L=(A.lines&&A.lines[i])||(i===1?{sc:A.sc,pv:A.pv}:null);if(!L){h+=`<tr><td style="color:var(--sub)">${['最善','次善'][i-1]||i}</td><td colspan="4" style="color:var(--sub)">…</td></tr>`;continue}const q=pvJa(st,L.pv||[],10);
-h+=`<tr class="arow" data-i="${i}"><td style="color:${['#e53935','#fb8c00','#1e88e5'][i-1]||'inherit'};font-weight:700">${['最善','次善'][i-1]||i}</td><td>${evS(L.sc,k)}</td><td>${esc(q[0]||'-')}</td><td class="pv">${esc(q.slice(1).join(' '))}</td><td><button class="ab ap" data-i="${i}">＋</button></td></tr>`}
+h+=`<tr class="arow" data-i="${i}"><td style="color:${['#e53935','#fb8c00','#1e88e5'][i-1]||'inherit'};font-weight:700">${['最善','次善'][i-1]||i}</td><td>${evS(L.sc,k)}</td><td>${esc(q[0]||'-')}</td><td class="pv" title="${esc(q.slice(1).join(' '))}">${esc(q.slice(1).join(' '))}</td><td><button class="ab ap" data-i="${i}">＋</button></td></tr>`}
 h+='</table>'}
 if(PVW)h+=`<div class="card">プレビュー中（${PVW.k}/${PVW.pv.length}）<button class="ab" id="pv1">◀</button><button class="ab" id="pv2">▶</button><button class="ab" id="pv3">棋譜に追加</button><button class="ab" id="pv4">終了</button></div>`;
 const sg=sgRoot();if(sg){let c=0;const f=x=>{c++;x.ch.forEach(f)};f(sg);h+=`<div class="card sgc">解析の提案: <b>${esc(sg.lab)}</b> から${c}手の変化（緑色）を棋譜に追加しますか？<br><button class="ab" id="sg1">追加する</button><button class="ab" id="sg2">破棄</button></div>`}
