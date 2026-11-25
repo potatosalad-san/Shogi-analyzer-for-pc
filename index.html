@@ -121,6 +121,7 @@ body{max-width:none}
 }
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;flex:none}
 .st input[type=color]{width:42px!important;height:30px;padding:0!important;margin:0 3px!important;border:1px solid var(--ln)}
+#bw{position:relative}
 </style><script>
 if(!self.crossOriginIsolated&&'serviceWorker' in navigator&&location.protocol==='https:'){const n=+sessionStorage.getItem('coi')||0,rl=()=>{if(n<3){sessionStorage.setItem('coi',n+1);location.reload()}};
 navigator.serviceWorker.addEventListener('controllerchange',rl);
@@ -231,7 +232,7 @@ function path(){const a=[];for(let n=cur;n.par;n=n.par)a.unshift(n);for(let n=cu
 const PN={歩:'歩兵',香:'香車',桂:'桂馬',銀:'銀將',金:'金將',飛:'飛車',角:'角行',と:'と金',杏:'成香',圭:'成桂',全:'成銀',馬:'龍馬',龍:'龍王'};
 function pcEl(p,s,rot){const e=document.createElement('span');e.className='pc'+(rot?' w':'');const n=p==='玉'?(s?'玉將':'王將'):PN[p];e.innerHTML='<i>'+n[0]+'</i><i>'+n[1]+'</i>';return e}
 function rHand(s){const e=$('#h'+(s===(flip?1:0)?1:0)),h=vst().h[s];e.innerHTML='';
-HO.split('').forEach(p=>{if(h[p]>0){const b=document.createElement('button');b.className='hp'+(sel&&sel.drop===p&&vst().side===s?' s':'');
+HO.split('').forEach(p=>{if(h[p]>0){const b=document.createElement('button');b.dataset.p=p;b.className='hp'+(sel&&sel.drop===p&&vst().side===s?' s':'');
 b.append(pcEl(p,s,(s===1)!==flip));
 if(h[p]>1){const n=document.createElement('span');n.className='cnt';n.textContent=h[p];b.append(n)}
 b.onclick=()=>{const st=vst();if(st.side!==s)return;sel=sel&&sel.drop===p?null:{drop:p};rGame()};e.append(b)}})}
@@ -241,7 +242,7 @@ xs.forEach(x=>{const l=document.createElement('div');l.className='lb';l.textCont
 ys.forEach(y=>{xs.forEach(x=>{const c=document.createElement('div'),p=st.b[y][x];c.className='c'+(st.last&&st.last[0]==x&&st.last[1]==y?' l':'')+(sel&&sel.x==x&&sel.y==y?' sl':'')+bmCls(x,y);
 if(p)c.append(pcEl(p.p,p.s,(p.s===1)!==flip));
 c.onclick=()=>tap(x,y);bd.append(c)});const l=document.createElement('div');l.className='lb';l.textContent=RK[y-1];bd.append(l)});
-{const w=bd.clientWidth;if(w)$('#bw').style.setProperty('--cs',((w-14)/9)+'px')}rHand(0);rHand(1);if(!PVW)drawArrows();
+{const w=bd.clientWidth;if(w)$('#bw').style.setProperty('--cs',((w-14)/9)+'px')}rHand(0);rHand(1);drawArrows();
 const ml=$('#ml');ml.innerHTML='';const ps=path();
 const st0=document.createElement('div');st0.className='mv'+(cur===g.root?' cu':'');st0.innerHTML='<span>開始局面</span>';st0.onclick=()=>{cur=g.root;sel=null;rGame()};ml.append(st0);
 ps.forEach((n,i)=>{const d=document.createElement('div');d.className='mv'+(n===cur?' cu':'')+(n.sg?' sg':'');const sp=document.createElement('span');sp.textContent=(i+1)+'. '+n.lab;if(EVC.on){const ev=nodeEv(n),dt=document.createElement('b');dt.className='dot';dt.style.background=ev==null?'transparent':evColor(ev);d.append(dt)}d.append(sp);
@@ -347,14 +348,19 @@ function pvStart(i){if(!AN||AN.node!==cur)return;const L=(AN.lines&&AN.lines[i])
 function pvStep(d){if(!PVW)return;PVW.k=Math.max(0,Math.min(PVW.pv.length,PVW.k+d));rGame()}
 function pvEnd(){PVW=null;rGame()}
 function pvAdd(){if(!PVW)return;const p=PVW.pv.slice(0,PVW.k);PVW=null;p.forEach(u=>addMove(fromUsi(u)))}
-function drawArrows(){const bd=$('#bd'),W=bd.clientWidth,H=bd.clientHeight;if(!W)return;let L=(AN&&AN.node===cur&&AN.lines)||{};if(!L[1]&&AN&&AN.node===cur&&AN.pv)L={...L,1:{pv:AN.pv}};
-const cs=(W-14)/9,cx=f=>(flip?f-1:9-f)*cs+cs/2,cy=r=>14+(flip?9-r:r-1)*cs+cs/2,col=['#e53935','#fb8c00','#1e88e5'];let h='';
-for(let i=3;i>=1;i--){const ln=L[i];if(!ln||!ln.pv||!UR.test(ln.pv[0]))continue;const m=fromUsi(ln.pv[0]),x2=cx(m.tx),y2=cy(m.ty),c=col[i-1];
-if(m.drop)h+=`<circle cx="${x2}" cy="${y2}" r="${cs*.36}" fill="none" stroke="${c}" stroke-width="3"/>`;
-else{const x1=cx(m.fx),y1=cy(m.fy),dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,hs=cs*.34,bx=x2-ux*hs*.9,by=y2-uy*hs*.9;
-h+=`<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${Math.max(3,cs*.11)}" stroke-linecap="round" opacity=".85"/><polygon points="${x2},${y2} ${bx-uy*hs*.55},${by+ux*hs*.55} ${bx+uy*hs*.55},${by-ux*hs*.55}" fill="${c}" opacity=".9"/>`}
-h+=`<circle cx="${x2}" cy="${y2}" r="${cs*.2}" fill="#fff" stroke="${c}" stroke-width="2"/><text x="${x2}" y="${y2+cs*.09}" text-anchor="middle" font-size="${cs*.26}" font-weight="700" fill="${c}">${['最','次','3'][i-1]}</text>`}
-if(h){const v=document.createElementNS('http://www.w3.org/2000/svg','svg');v.setAttribute('viewBox',`0 0 ${W} ${H}`);v.style.cssText='position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:5';v.innerHTML=h;bd.append(v)}}
+function drawArrows(){const bw=$('#bw'),bd=$('#bd');bw.querySelectorAll('svg.arw').forEach(x=>x.remove());if(PVW)return;
+let L=(AN&&AN.node===cur&&AN.lines)||{};if(!L[1]&&AN&&AN.node===cur&&AN.pv)L={...L,1:{pv:AN.pv}};
+const br=bd.getBoundingClientRect(),wr=bw.getBoundingClientRect(),W=wr.width,H=wr.height;if(!br.width||!W)return;
+const cs=(br.width-14)/9,ox=br.left-wr.left,oy=br.top-wr.top,cx=f=>ox+(flip?f-1:9-f)*cs+cs/2,cy=r=>oy+14+(flip?9-r:r-1)*cs+cs/2,col=['#e53935','#fb8c00','#1e88e5'],side=getSt(cur).side,hand=$('#h'+(side===(flip?1:0)?1:0));let h='';
+for(let i=3;i>=1;i--){const ln=L[i];if(!ln||!ln.pv||!UR.test(ln.pv[0]))continue;const m=fromUsi(ln.pv[0]),x2=cx(m.tx),y2=cy(m.ty),c=col[i-1],drop=!!m.drop;let x1=null,y1=null;
+if(drop){const b=hand&&hand.querySelector('[data-p="'+m.drop+'"]');if(b){const r=b.getBoundingClientRect();x1=r.left-wr.left+r.width/2;y1=r.top-wr.top+r.height/2;h+=`<circle cx="${x1}" cy="${y1}" r="${Math.max(r.width,r.height)*.62}" fill="none" stroke="${c}" stroke-width="3"/>`}}
+else{x1=cx(m.fx);y1=cy(m.fy)}
+if(x1!=null){const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,hs=cs*.34,bx=x2-ux*hs*.9,by=y2-uy*hs*.9;
+h+=`<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${Math.max(3,cs*.11)}" stroke-linecap="round" opacity=".85"${drop?' stroke-dasharray="7 5"':''}/><polygon points="${x2},${y2} ${bx-uy*hs*.55},${by+ux*hs*.55} ${bx+uy*hs*.55},${by-ux*hs*.55}" fill="${c}" opacity=".9"/>`}
+else h+=`<circle cx="${x2}" cy="${y2}" r="${cs*.36}" fill="none" stroke="${c}" stroke-width="3"/>`;
+h+=`<circle cx="${x2}" cy="${y2}" r="${cs*.2}" fill="#fff" stroke="${c}" stroke-width="2"/><text x="${x2}" y="${y2+cs*.09}" text-anchor="middle" font-size="${cs*.26}" font-weight="700" fill="${c}">${['最','次','3'][i-1]}</text>`;
+if(drop)h+=`<text x="${x2+cs*.34}" y="${y2-cs*.22}" font-size="${cs*.3}" font-weight="700" fill="${c}" stroke="#fff" stroke-width="3" paint-order="stroke">${m.drop}打</text>`}
+if(h){const v=document.createElementNS('http://www.w3.org/2000/svg','svg');v.setAttribute('class','arw');v.setAttribute('viewBox','0 0 '+W+' '+H);v.style.cssText='position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:5;overflow:visible';v.innerHTML=h;bw.append(v)}}
 function autoTrig(){if(EN.ready&&EN.auto&&!EN.off&&!EN.batch&&!HOLD&&!PVW&&!cur.an&&EN.last!==cur){EN.last=cur;anSoon()}}
 const isSg=n=>{for(;n;n=n.par)if(n.sg)return true;return false};
 function suggest(n){if(!EN.sug||!n.an||isSg(n))return;const a=n.an;if(!a.pv||!a.pv.length||!UR.test(a.pv[0]))return;
@@ -493,3 +499,4 @@ if(t){try{await signInWithCredential(auth,new OAuthProvider('google.com').creden
 }
 </script>
 </body></html>
+
