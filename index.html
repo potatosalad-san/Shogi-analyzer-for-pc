@@ -101,7 +101,6 @@ body{max-width:none}
 }
 /* ---- 解析モード v3 ---- */
 .gt{font-size:11px}
-#game.am #bw{align-self:start;margin-top:6px}
 /* ---- レイアウト v4 ---- */
 #bw{--cs:30px}
 .hand{width:calc(var(--cs)*1.15)}
@@ -122,6 +121,9 @@ body{max-width:none}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;flex:none}
 .st input[type=color]{width:42px!important;height:30px;padding:0!important;margin:0 3px!important;border:1px solid var(--ln)}
 #bw{position:relative}
+.pc i.one{font-size:1.3em}
+#tbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 10px;border-bottom:1px solid var(--ln);background:var(--card);flex:none}#tbar select{font-size:13px;max-width:100%;padding:4px}#tfn{color:var(--sub);font-size:12px}
+.tn.dim{opacity:.4}.tgl{position:absolute;right:4px;top:50%;margin-top:-9px;min-width:18px;height:18px;line-height:18px;padding:0 4px;text-align:center;border-radius:9px;background:var(--hd);color:var(--hdt);font-size:11px}
 </style><script>
 if(!self.crossOriginIsolated&&'serviceWorker' in navigator&&location.protocol==='https:'){const n=+sessionStorage.getItem('coi')||0,rl=()=>{if(n<3){sessionStorage.setItem('coi',n+1);location.reload()}};
 navigator.serviceWorker.addEventListener('controllerchange',rl);
@@ -136,7 +138,7 @@ navigator.serviceWorker.register('coi-sw.js').then(r=>{r.update();if(r.active&&!
 <section class="v" id="game"><div id="bw"><div class="hand" id="h0"></div><div id="bd"></div><div class="hand" id="h1"></div></div>
 <div id="mid"><div id="ml"></div><div id="rt"><div class="tabs"><div class="a" id="t1">コメント</div></div><textarea id="cm" placeholder="コメントを入力"></textarea><div id="an" style="display:none"><div id="ang"></div><div id="anr"></div><div id="anc"></div></div></div></div>
 <div id="ctl"><button id="b0">⏮</button><button id="b1">◀</button><button id="b2">▶</button><button id="b3">⏭</button><button id="fl" style="font-size:16px;font-weight:700">反転</button><button id="ba" style="font-size:16px;font-weight:700">解析</button><button id="tb">🌲</button></div></section>
-<section class="v" id="tree"><div id="tr"></div><div class="zb"><button id="zi">＋</button><button id="zo">−</button></div></section>
+<section class="v" id="tree"><div id="tbar"><select id="tfm"><option value="all">すべての手</option><option value="main">本譜のみ</option><option value="sente">先手が優勢（+200超）</option><option value="gote">後手が優勢（-200未満）</option><option value="even">互角（±200以内）</option><option value="win">勝勢（±1200超）</option><option value="bad">悪手（評価が300以上下がった）</option><option value="unan">未解析の手</option><option value="sg">解析の提案（緑）</option><option value="cm">コメントあり</option></select><button class="ab" id="tfx">分岐を全部開く</button><button class="ab" id="tfc">分岐を全部閉じる</button><button class="ab" id="tfh">現在の手へ</button><span id="tfn"></span></div><div id="tr"></div><div class="zb"><button id="zi">＋</button><button id="zo">−</button></div></section>
 </main><div id="toast"></div>
 <script>
 const $=s=>document.querySelector(s),P={歩:'と',香:'杏',桂:'圭',銀:'全',角:'馬',飛:'龍'},U={};for(const k in P)U[P[k]]=k;
@@ -229,8 +231,8 @@ $('#fab').onclick=()=>sheet([['新規作成',()=>dlg('新規棋譜','',0,t=>{con
 $('#mn').onclick=()=>gMenu(false);$('#bk').onclick=()=>{if(view==='tree')show('game');else{g=null;show('home')}};
 document.querySelectorAll('[data-t]').forEach(e=>e.onclick=()=>toast('準備中です'));
 function path(){const a=[];for(let n=cur;n.par;n=n.par)a.unshift(n);for(let n=cur.ch[0];n;n=n.ch[0])a.push(n);return a}
-const PN={歩:'歩兵',香:'香車',桂:'桂馬',銀:'銀將',金:'金將',飛:'飛車',角:'角行',と:'と金',杏:'成香',圭:'成桂',全:'成銀',馬:'龍馬',龍:'龍王'};
-function pcEl(p,s,rot){const e=document.createElement('span');e.className='pc'+(rot?' w':'');const n=p==='玉'?(s?'玉將':'王將'):PN[p];e.innerHTML='<i>'+n[0]+'</i><i>'+n[1]+'</i>';return e}
+const PN={歩:'歩兵',香:'香車',桂:'桂馬',銀:'銀將',金:'金將',飛:'飛車',角:'角行',と:'と',杏:'成香',圭:'成桂',全:'成銀',馬:'龍馬',龍:'龍王'};
+function pcEl(p,s,rot){const e=document.createElement('span');e.className='pc'+(rot?' w':'');const n=p==='玉'?(s?'玉將':'王將'):PN[p];e.innerHTML=n.length>1?'<i>'+n[0]+'</i><i>'+n[1]+'</i>':'<i class="one">'+n+'</i>';return e}
 function rHand(s){const e=$('#h'+(s===(flip?1:0)?1:0)),h=vst().h[s];e.innerHTML='';
 HO.split('').forEach(p=>{if(h[p]>0){const b=document.createElement('button');b.dataset.p=p;b.className='hp'+(sel&&sel.drop===p&&vst().side===s?' s':'');
 b.append(pcEl(p,s,(s===1)!==flip));
@@ -281,9 +283,23 @@ const pc=st.b[sel.y][sel.x],fx=sel.x,fy=sel.y,z=s=>s?y>=7:y<=3,z0=st.side?fy>=7:
 if(P[pc.p]&&(z0||z1)){const must=(pc.p==='歩'||pc.p==='香')&&(st.side?y===9:y===1)||pc.p==='桂'&&(st.side?y>=8:y<=2);if(must)return go(true);return sheet([['成る',()=>go(true)],['成らない',()=>go(false)]])}
 return go(false)}
 if(p&&p.s===st.side){sel={x,y};rGame()}}
-function rTree(){const t=$('#tr');t.innerHTML='';if(!g.root.ch.length){t.textContent='指し手がありません';return}
+const TF=Object.assign({mode:'all'},(()=>{try{return JSON.parse(localStorage.getItem('tf')||'{}')}catch(e){return{}}})());
+let COLS=new WeakSet(),TFS=null;
+function tfMatch(n,m){const v=nodeEv(n);switch(m){case'sente':return v!=null&&v>200;case'gote':return v!=null&&v<-200;case'even':return v!=null&&Math.abs(v)<=200;case'win':return v!=null&&Math.abs(v)>1200;case'unan':return v==null;case'sg':return !!n.sg;case'cm':return !!(n.c&&n.c.trim());
+case'bad':{const p=n.par;if(!p||p===g.root)return false;const pv=nodeEv(p);if(v==null||pv==null)return false;return(getSt(p).side?v-pv:pv-v)>=300}}return true}
+function tfKeep(){const m=TF.mode;TFS=null;if(m==='all')return null;const keep=new Set();
+if(m==='main'){for(let n=g.root.ch.find(c=>!c.sg);n;n=n.ch.find(c=>!c.sg))keep.add(n);return keep}
+TFS=new Set();const f=n=>n.ch.forEach(c=>{if(tfMatch(c,m)){TFS.add(c);for(let q=c;q&&q!==g.root;q=q.par)keep.add(q)}f(c)});f(g.root);return keep}
+function tfCnt(n,keep){let c=0;const f=x=>x.ch.forEach(k=>{if(!keep||keep.has(k)){c++;f(k)}});f(n);return c}
+function tfInfo(keep){const e=$('#tfn');if(!e)return;let tot=0;const f=n=>n.ch.forEach(c=>{tot++;f(c)});f(g.root);e.textContent=keep?(TFS?'一致 '+TFS.size+'手 / 全'+tot+'手':'表示 '+keep.size+'手 / 全'+tot+'手'):'全'+tot+'手'}
+{$('#tfm').value=TF.mode;$('#tfm').onchange=e=>{TF.mode=e.target.value;try{localStorage.setItem('tf',JSON.stringify(TF))}catch(x){}rTree()};
+$('#tfx').onclick=()=>{COLS=new WeakSet();rTree(true)};
+$('#tfc').onclick=()=>{const anc=new Set();for(let q=cur;q;q=q.par)anc.add(q);const f=n=>{if(n!==g.root&&n.ch.filter(c=>!c.sg).length>1&&!anc.has(n))COLS.add(n);n.ch.forEach(f)};f(g.root);rTree(true)};
+$('#tfh').onclick=()=>{const c=document.querySelector('#tr .tn.cu');if(c)c.scrollIntoView({block:'center',inline:'center'})}}
+function rTree(ks){const t=$('#tr'),sl=t.scrollLeft,sy=t.scrollTop;t.innerHTML='';if(!g.root.ch.length){t.textContent='指し手がありません';return}
+const keep=tfKeep(),vk=n=>COLS.has(n)?[]:n.ch.filter(c=>!keep||keep.has(c));tfInfo(keep);if(keep&&!keep.size){t.textContent='条件に合う手がありません';return}
 const W=140,H=50,BW=124,BH=36,L=[];let nx=0,md=1;
-function kids(n,d,c,v){n.ch.forEach((k,i)=>lay(k,d,i?++nx:c,v||i>0))}
+function kids(n,d,c,v){vk(n).forEach((k,i)=>lay(k,d,i?++nx:c,v||i>0))}
 function lay(n,d,c,v){const o={n,d,c,v};L.push(o);n._o=o;nx=Math.max(nx,c);md=Math.max(md,d);kids(n,d+1,c,v)}
 g.root._o=null;kids(g.root,1,0,false);
 const w=(nx+1)*W,h=(md-1)*H+BH+4,cx=c=>c*W+W/2,ty=d=>(d-1)*H+2;
@@ -291,11 +307,12 @@ let sv='';L.forEach(o=>{const p=o.n.par._o,x2=cx(o.c),y2=ty(o.d),ym=y2-(H-BH)/2;
 if(p){const x1=cx(p.c),y1=ty(p.d)+BH;sv+=x1==x2?`M${x1} ${y1}V${y2}`:`M${x1} ${y1}V${ym}H${x2}V${y2}`}
 else if(o.c>0){sv+=`M${cx(0)} ${ym}H${x2}V${y2}`}});
 t.innerHTML=`<div style="position:relative;width:${w}px;height:${h}px"><svg width="${w}" height="${h}" style="position:absolute;left:0;top:0"><path d="${sv}" fill="none" style="stroke:var(--sub);stroke-width:1.5;opacity:.6"/></svg></div>`;
-const box=t.firstChild;L.forEach(o=>{const b=document.createElement('div');b.className='tn'+(o.v?' v':'')+(o.n.sg?' sg':'')+(o.n===cur?' cu':'');
+const box=t.firstChild;L.forEach(o=>{const b=document.createElement('div');b.className='tn'+(o.v?' v':'')+(o.n.sg?' sg':'')+(TFS&&!TFS.has(o.n)?' dim':'')+(o.n===cur?' cu':'');
 b.style.cssText=`left:${o.c*W+(W-BW)/2}px;top:${ty(o.d)}px;width:${BW}px;height:${BH}px`;b.textContent=o.d+'.'+o.n.lab;{const ev=nodeEv(o.n);if(EVC.on&&ev!=null){const dt=document.createElement('b');dt.className='dot';dt.style.cssText='background:'+evColor(ev)+';position:absolute;left:6px;top:50%;margin-top:-5px';b.append(dt)}}
+{const nb=o.n.ch.filter(c=>!keep||keep.has(c)).length,cl=COLS.has(o.n);if(nb>1||cl){const tg=document.createElement('span');tg.className='tgl';tg.textContent=cl?'▸'+tfCnt(o.n,keep):'▾';tg.title=cl?'分岐を開く':'分岐を閉じる';tg.onclick=e=>{e.stopPropagation();if(cl)COLS.delete(o.n);else COLS.add(o.n);rTree(true)};b.style.paddingRight='26px';b.append(tg)}}
 b.onclick=()=>{cur=o.n;sel=null;show('game')};box.append(b)});
 const wr=document.createElement('div');t.append(wr);wr.append(box);box.style.transformOrigin='0 0';TZ={box,wr,w,h};applyZ();
-const c=box.querySelector('.cu');if(c)c.scrollIntoView({block:'center',inline:'center'})}
+if(ks){t.scrollLeft=sl;t.scrollTop=sy}else{const c=box.querySelector('.cu');if(c)c.scrollIntoView({block:'center',inline:'center'})}}
 let Z=1,TZ=null,pd=0;
 function applyZ(){if(!TZ)return;TZ.box.style.transform=`scale(${Z})`;TZ.wr.style.width=TZ.w*Z+'px';TZ.wr.style.height=TZ.h*Z+'px'}
 function zoomTo(z,fx,fy){const t=$('#tr');z=Math.min(2.5,Math.max(.35,z));const k=z/Z,px=(t.scrollLeft+fx)*k-fx,py=(t.scrollTop+fy)*k-fy;Z=z;applyZ();t.scrollLeft=px;t.scrollTop=py}
@@ -499,4 +516,3 @@ if(t){try{await signInWithCredential(auth,new OAuthProvider('google.com').creden
 }
 </script>
 </body></html>
-
