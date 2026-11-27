@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>棋譜ノート</title>
+<title>棋譜ラボ</title>
 <style>
-:root{--hd:#ffb74d;--hdt:#222;--bg:#fafafa;--fg:#222;--sub:#777;--ln:#ddd;--card:#fff;--ac:#e07b00;--bd:#f5d9a0;--bt:#d6a35a;--var:#e3f1fd;--varf:#0d47a1;--sel:#e0e0e0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--hd:#ffb74d;--hdt:#222;--bg:#fafafa;--fg:#222;--sub:#777;--ln:#ddd;--card:#fff;--ac:#17808a;--bd:#f5d9a0;--bt:#d6a35a;--var:#e3f1fd;--varf:#0d47a1;--sel:#e0e0e0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--hd:#b36b00;--hdt:#fff;--bg:#1b1b1b;--fg:#eee;--sub:#aaa;--ln:#3a3a3a;--card:#262626;--ac:#ffb74d;--bd:#c9a46a;--bt:#8a6a3a;--var:#173149;--varf:#90caf9;--sel:#3a3a3a}}
 :root[data-theme="dark"]{--hd:#b36b00;--hdt:#fff;--bg:#1b1b1b;--fg:#eee;--sub:#aaa;--ln:#3a3a3a;--card:#262626;--ac:#ffb74d;--bd:#c9a46a;--bt:#8a6a3a;--var:#173149;--varf:#90caf9;--sel:#3a3a3a}
 *{box-sizing:border-box}html,body{height:100%;margin:0}
@@ -25,7 +25,7 @@ nav div{flex:1;text-align:center;padding:8px 0;font-size:11px;color:var(--sub)}n
 #bw{display:flex;justify-content:center;padding:0 2px;flex:none}
 #bd{display:grid;grid-template-columns:repeat(9,1fr) 14px;grid-template-rows:14px repeat(9,1fr);flex:1;min-width:0;max-width:46vh;font-size:11px;color:var(--sub);background:none}
 #bd .c{aspect-ratio:1;border:1px solid #6b4b1f;background:#f0c987;margin:0 -.5px -.5px 0;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
-#bd .c.l{background:#e0b062}#bd .c.sl{background:#ffd54f;outline:2px solid #e07b00;z-index:1}
+#bd .c.l{background:#e0b062}#bd .c.sl{background:#ffd54f;outline:2px solid #17808a;z-index:1}
 #bd .lb{display:flex;align-items:center;justify-content:center}
 .pc{font-size:clamp(14px,5.4vw,26px);font-weight:700;color:#222;line-height:1;background:#f7dea0;padding:3px 2px;clip-path:polygon(50% 0,92% 14%,100% 100%,0 100%,8% 14%)}
 .pc.pr{color:#c62828}.pc.w{transform:rotate(180deg)}
@@ -55,7 +55,7 @@ nav div{flex:1;text-align:center;padding:8px 0;font-size:11px;color:var(--sub)}n
 #bw{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03 0.5' numOctaves='3' seed='8'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.17 0 0 0 0 0.03 1.3 0 0 0 -0.4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),var(--wood);padding:6px 4px}
 #bd{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.45' numOctaves='3' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.36 0 0 0 0 0.1 1.1 0 0 0 -0.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),#f1cf8c}
 #bd .c{background:transparent;border-color:rgba(50,30,8,.8);container-type:inline-size}
-#bd .c.l{background:rgba(110,70,15,.32)}#bd .c.sl{background:rgba(255,196,60,.6);outline:2px solid #e07b00}
+#bd .c.l{background:rgba(110,70,15,.32)}#bd .c.sl{background:rgba(23,128,138,.35);outline:2px solid #17808a}
 #bd .lb{background:var(--wood);color:#4a2f0c;font-weight:600;font-size:12px}
 .pc{clip-path:none;padding:6% 0 0;width:80%;height:88%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 112' preserveAspectRatio='none'%3E%3Cpolygon points='50,2 88,20 97,110 3,110 12,20' fill='%23f1d38f' stroke='%237a5520' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;filter:drop-shadow(0 1.5px 1px rgba(40,20,0,.45));display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--pf,'Shoryu'),'Shoryu','Yuji Boku','Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif;font-weight:400;font-size:38cqw;line-height:1;color:#1c1006}
 .pc i{font-style:normal;display:block}
@@ -63,7 +63,7 @@ nav div{flex:1;text-align:center;padding:8px 0;font-size:11px;color:var(--sub)}n
 #an{overflow:auto;color:var(--fg);font-size:13px;margin:0;padding:8px;flex:1;min-height:0}.ab{background:var(--hd);color:var(--hdt);border:0;border-radius:8px;padding:8px 10px;font-size:13px;margin:2px 2px 2px 0;cursor:pointer;display:inline-block}#ent{font-size:13px}
 #bd .c.bm{outline:3px solid #1e88e5;outline-offset:-3px;z-index:1}#bd .c.bf{background:rgba(30,136,229,.25)}
 .st label{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:5px 0}.st input,.st select{width:92px;font-size:13px;padding:4px}.st span input{width:84px}.st span select{width:auto}
-.gl{stroke:var(--ln);stroke-width:1}.gt{fill:var(--sub);font-size:9px}.pvb{border:2px solid #d9a45a;border-radius:14px;padding:8px 10px;margin-top:8px;line-height:1.7;background:var(--card)}
+.gl{stroke:var(--ln);stroke-width:1}.gt{fill:var(--sub);font-size:9px}.pvb{border:2px solid #9fb7bd;border-radius:14px;padding:8px 10px;margin-top:8px;line-height:1.7;background:var(--card)}
 /* ---- 画面サイズ対応 ---- */
 body{max-width:none}
 #list,#home nav{width:100%;max-width:760px;align-self:center}
@@ -93,7 +93,7 @@ body{max-width:none}
 #bd{position:relative}
 #game.am #bd{max-width:26vh}
 .atb{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}.atb td{padding:5px 6px;border-bottom:1px solid var(--ln);vertical-align:top}.atb tr.arow{cursor:pointer}.atb tr.arow:hover{background:var(--sel)}.atb td.pv{color:var(--sub);word-break:break-all}.ap{padding:2px 8px!important}
-.card{border:2px solid #d9a45a;border-radius:10px;padding:8px 10px;margin:8px 0;background:var(--card)}.sgc{border-color:#43a047}
+.card{border:2px solid #9fb7bd;border-radius:10px;padding:8px 10px;margin:8px 0;background:var(--card)}.sgc{border-color:#43a047}
 .mv.sg{color:#2e7d32;font-style:italic}.tn.sg{background:#e8f5e9!important;color:#1b5e20!important;border:1px dashed #43a047!important}
 @media(min-width:820px) and (min-height:560px) and (orientation:landscape){
 #game.am{grid-template-columns:max(300px,26vw) minmax(0,1fr)}
@@ -124,6 +124,31 @@ body{max-width:none}
 .pc i.one{font-size:1.3em}
 #tbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 10px;border-bottom:1px solid var(--ln);background:var(--card);flex:none}#tbar select{font-size:13px;max-width:100%;padding:4px}#tfn{color:var(--sub);font-size:12px}
 .tn.dim{opacity:.4}.tgl{position:absolute;right:4px;top:50%;margin-top:-9px;min-width:18px;height:18px;line-height:18px;padding:0 4px;text-align:center;border-radius:9px;background:var(--hd);color:var(--hdt);font-size:11px}
+#trb{padding:8px 10px;background:var(--card);border-left:5px solid var(--hd);border-bottom:1px solid var(--ln);font-size:14px;flex:none}
+.sh{max-height:80vh;overflow:auto}
+/* ===== 見た目の刷新: 紺×ティール、カード型一覧、チップ型の指し手リスト ===== */
+:root{--hd:#a8d8dc;--hdt:#1b3f45;--bg:#f6f9f9;--ac:#2b8a93;--bd:#d6ecee;--bt:#a9cfd3;--sel:#e3f1f2;--ln:#e1eaeb;--wood:#a9d3d0;--tray1:#c4e3e0;--tray2:#a3d0cd;--trayl:#a9d3d0;--trayt:#1e4448}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--hd:#33535c;--hdt:#e9f2f3;--bg:#162027;--card:#1f2c33;--ac:#6ccbd3;--bd:#2a4b51;--bt:#44737a;--sel:#2a3a43;--ln:#31404a;--wood:#243842;--tray1:#35525d;--tray2:#24404a;--trayl:#243842;--trayt:#cfe3e6}}
+:root[data-theme="dark"]{--hd:#33535c;--hdt:#e9f2f3;--bg:#162027;--card:#1f2c33;--ac:#6ccbd3;--bd:#2a4b51;--bt:#44737a;--sel:#2a3a43;--ln:#31404a;--wood:#243842;--tray1:#35525d;--tray2:#24404a;--trayl:#243842;--trayt:#cfe3e6}
+header h1{font-weight:600;letter-spacing:.04em}
+.hbar{display:flex;gap:8px;align-items:center;padding:10px 12px;width:100%;max-width:980px;align-self:center;flex:none}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{border:1px solid var(--ln);background:var(--card);color:var(--fg);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer}
+.pill.on{background:var(--hd);color:var(--hdt);border-color:var(--hd)}
+.fab{position:static!important;width:auto;height:auto;margin-left:auto;padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;background:var(--ac);color:#fff;box-shadow:none}
+#list{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;padding:0 12px 24px;align-content:start;max-width:980px}
+.it{border:1px solid var(--ln);border-radius:14px;background:var(--card);padding:12px;gap:12px}
+.it b{font-size:16px}.it small{display:block;margin-top:2px}
+.it .bk{width:40px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--ac);color:#fff;font-weight:700;font-size:18px;clip-path:polygon(50% 0,92% 16%,100% 100%,0 100%,8% 16%)}
+#bw{background:linear-gradient(160deg,var(--tray1),var(--tray2))!important;border-radius:14px}
+#bd{background-color:#ecd9ac}
+#bd .lb{background:var(--trayl)!important;color:var(--trayt)}
+.cnt{color:var(--trayt)!important}
+#ctl{background:var(--card)!important;color:var(--fg)!important;margin:8px 10px;border-radius:14px;border:1px solid var(--ln);overflow:hidden}
+#ctl button{color:var(--fg)!important;height:46px}#ctl button:active{background:var(--sel)}
+@media(max-width:819px){
+#game.on #bw{order:0;margin:8px 10px 0}#game.on #ctl{order:1}#game.on #mid{order:2}
+}
 </style><script>
 if(!self.crossOriginIsolated&&'serviceWorker' in navigator&&location.protocol==='https:'){const n=+sessionStorage.getItem('coi')||0,rl=()=>{if(n<3){sessionStorage.setItem('coi',n+1);location.reload()}};
 navigator.serviceWorker.addEventListener('controllerchange',rl);
@@ -131,13 +156,12 @@ navigator.serviceWorker.register('coi-sw.js').then(r=>{r.update();if(r.active&&!
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yuji+Boku&family=Yuji+Mai&family=Yuji+Syuku&family=Zen+Antique&text=%E6%AD%A9%E5%85%B5%E9%A6%99%E8%BB%8A%E6%A1%82%E9%A6%AC%E9%8A%80%E5%B0%87%E9%87%91%E7%8E%8B%E7%8E%89%E9%A3%9B%E8%A7%92%E9%BE%8D%E6%88%90%E3%81%A8%E5%85%A8%E5%9C%AD%E6%9D%8F&display=swap">
 </head><body>
-<header><button class="ib" id="bk" style="display:none">←</button><h1 id="ttl">棋譜管理</h1><button class="ib" id="ai" style="font-size:13px;width:auto;padding:0 8px">AI設定</button><button class="ib" id="cs" style="font-size:13px;width:auto;padding:0 8px">☁</button><button class="ib" id="mn">⋮</button></header>
+<header><button class="ib" id="bk" style="display:none">←</button><h1 id="ttl">棋譜ラボ</h1><button class="ib" id="ai" style="font-size:13px;width:auto;padding:0 8px">AI設定</button><button class="ib" id="cs" style="font-size:13px;width:auto;padding:0 8px">☁</button><button class="ib" id="mn">⋮</button></header>
 <main>
-<section class="v on" id="home"><div id="list"></div><button class="fab" id="fab">＋</button>
-<nav><div class="a"><span>🏠</span>ホーム</div><div data-t><span>🏋</span>棋譜トレ</div><div data-t><span>📕</span>棋書等</div><div data-t><span>⚙</span>設定</div></nav></section>
+<section class="v on" id="home"><div class="hbar"><div class="pills"><button class="pill on">棋譜</button><button class="pill" id="ntr">練習</button><button class="pill" data-t>設定</button></div><button class="fab" id="fab">＋ 新規</button></div><div id="list"></div></section>
 <section class="v" id="game"><div id="bw"><div class="hand" id="h0"></div><div id="bd"></div><div class="hand" id="h1"></div></div>
-<div id="mid"><div id="ml"></div><div id="rt"><div class="tabs"><div class="a" id="t1">コメント</div></div><textarea id="cm" placeholder="コメントを入力"></textarea><div id="an" style="display:none"><div id="ang"></div><div id="anr"></div><div id="anc"></div></div></div></div>
-<div id="ctl"><button id="b0">⏮︎</button><button id="b1">◀</button><button id="b2">▶</button><button id="b3">⏭︎</button><button id="fl" style="font-size:16px;font-weight:700">反転</button><button id="ba" style="font-size:16px;font-weight:700">解析</button><button id="tb">🌲</button></div></section>
+<div id="mid"><div id="ml"></div><div id="rt"><div id="trb" style="display:none"></div><div class="tabs"><div class="a" id="t1">コメント</div></div><textarea id="cm" placeholder="コメントを入力"></textarea><div id="an" style="display:none"><div id="ang"></div><div id="anr"></div><div id="anc"></div></div></div></div>
+<div id="ctl"><button id="b0">«</button><button id="b1">‹</button><button id="b2">›</button><button id="b3">»</button><button id="fl" style="font-size:16px;font-weight:700">反転</button><button id="ba" style="font-size:16px;font-weight:700">解析</button><button id="tb" style="font-size:16px;font-weight:700">分岐</button></div></section>
 <section class="v" id="tree"><div id="tbar"><select id="tfm"><option value="all">すべての手</option><option value="main">本譜のみ</option><option value="sente">先手が優勢（+200超）</option><option value="gote">後手が優勢（-200未満）</option><option value="even">互角（±200以内）</option><option value="win">勝勢（±1200超）</option><option value="bad">悪手（評価が300以上下がった）</option><option value="unan">未解析の手</option><option value="sg">解析の提案（緑）</option><option value="cm">コメントあり</option></select><button class="ab" id="tfx">分岐を全部開く</button><button class="ab" id="tfc">分岐を全部閉じる</button><button class="ab" id="tfh">現在の手へ</button><span id="tfn"></span></div><div id="tr"></div><div class="zb"><button id="zi">＋</button><button id="zo">−</button></div></section>
 </main><div id="toast"></div>
 <script>
@@ -175,7 +199,7 @@ function getSt(n){if(!n.st)n.st=apply(getSt(n.par),n.m);return n.st}
 function relink(n,p){n.par=p;n.ch.forEach(c=>relink(c,n))}
 function mkGame(t,root){const o={id:Date.now()+''+Math.random(),title:t,t:Date.now(),root:root||{ch:[],c:''}};G.unshift(o);return o}
 function openGame(o){g=o;relink(g.root,null);g.root.st=init();cur=g.root;sel=null;open=null;show('game')}
-function addMove(m){const st=getSt(cur),lab=label(st,m);let e=cur.ch.find(c=>c.lab===lab);
+function addMove(m){if(TR&&TR.on)return trMove(m);const st=getSt(cur),lab=label(st,m);let e=cur.ch.find(c=>c.lab===lab);
 if(!e){e={m,lab,c:'',ch:[],par:cur};cur.ch.push(e)}if(e.sg)delete e.sg;cur=e;sel=null;open=null;save();render()}
 const FW='０１２３４５６７８９';
 function parseKif(tx){const root={ch:[],c:''};root.st=init();let n=root,path=[],lines=[path];
@@ -196,12 +220,12 @@ function line(n,d){const al=[];for(;n;n=n.ch.find(c=>!c.sg),d++){s+=d+' '+fm(n)+
 al.forEach(([a,d])=>{s+='\n変化：'+d+'手\n';line(a,d)})}
 line(g.root.ch.find(c=>!c.sg),1);return s}
 function show(v){view=v;['home','game','tree'].forEach(x=>$('#'+x).classList.toggle('on',x===v));$('#bk').style.display=v==='home'?'none':'';
-$('#mn').style.display=v==='tree'?'none':'';$('#ttl').textContent=v==='home'?'棋譜管理':v==='tree'?'分岐ツリー':g.title;render()}
+$('#mn').style.display=v==='tree'?'none':'';$('#ttl').textContent=v==='home'?'棋譜ラボ':v==='tree'?'分岐ツリー':g.title;render()}
 function render(){if(view==='home')rHome();else if(view==='game')rGame();else rTree()}
 function fmt(t){const d=new Date(t),p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`}
-function rHome(){const L=$('#list');L.innerHTML='';if(!G.length)L.innerHTML='<p style="padding:24px;color:var(--sub)">棋譜がありません。右下の＋から作成してください。</p>';
-[...G].sort((a,b)=>b.t-a.t).forEach(o=>{const d=document.createElement('div');d.className='it';d.innerHTML=`<span class="bk">📖</span><div class="t"><b></b><small>最終更新: ${fmt(o.t)}</small></div><button class="ib">⋮</button>`;
-d.querySelector('b').textContent=o.title;d.onclick=()=>openGame(o);d.querySelector('button').onclick=e=>{e.stopPropagation();g=o;gMenu(true)};L.append(d)})}
+function rHome(){const L=$('#list');L.innerHTML='';if(!G.length)L.innerHTML='<p style="padding:24px;color:var(--sub)">棋譜がありません。上の「＋ 新規」から作成してください。</p>';
+[...G].sort((a,b)=>b.t-a.t).forEach(o=>{const d=document.createElement('div');d.className='it';let nm=0;for(let q=o.root&&o.root.ch&&o.root.ch.find(x=>!x.sg);q;q=q.ch&&q.ch.find(x=>!x.sg))nm++;d.innerHTML=`<span class="bk"></span><div class="t"><b></b><small>${nm}手　${fmt(o.t)}</small></div><button class="ib">⋮</button>`;
+d.querySelector('b').textContent=o.title;d.querySelector('.bk').textContent=(o.title||'棋')[0];d.onclick=()=>openGame(o);d.querySelector('button').onclick=e=>{e.stopPropagation();g=o;gMenu(true)};L.append(d)})}
 function sheet(items){const o=document.createElement('div');o.className='ov';const s=document.createElement('div');s.className='sh';
 items.forEach(([t,f,c])=>{const d=document.createElement('div');d.textContent=t;if(c)d.className=c;d.onclick=()=>{o.remove();f()};s.append(d)});o.append(s);o.onclick=e=>{if(e.target===o)o.remove()};document.body.append(o)}
 function dlg(title,val,area,ok,ta){const o=document.createElement('div');o.className='ov';const s=document.createElement('div');s.className='sh';
@@ -224,11 +248,11 @@ function importText(t,title){t=t.replace(/^\ufeff/,'').trim();let root,ti=title;
 if(t[0]==='{'){const o=JSON.parse(t);if(o.format!=='kifu-note'||!o.root)throw new Error('形式が違います');root=o.root;if(!ti||ti==='無題')ti=o.title||ti}else root=parseKif(t);
 const o=mkGame(ti||'無題',root);openGame(o);save()}
 function importFile(){const i=document.createElement('input');i.type='file';i.accept='.kif,.kifu,.json,.txt';i.onchange=async()=>{const f=i.files[0];if(!f)return;try{importText(await f.text(),f.name.replace(/\.[^.]+$/,''))}catch(e){toast('取り込めません: '+e.message)}};i.click()}
-function gMenu(home){if(!g){sheet([['駒の書体を選ぶ',fontMenu]]);return}sheet([['駒の書体を選ぶ',fontMenu],['名前を変更',()=>dlg('名前を変更',g.title,0,t=>{g.title=t;save();if(!home)$('#ttl').textContent=t;render()})],
+function gMenu(home){if(!g){sheet([['駒の書体を選ぶ',fontMenu]]);return}sheet([['駒の書体を選ぶ',fontMenu],['この棋譜で手順練習',()=>trSide(g)],['名前を変更',()=>dlg('名前を変更',g.title,0,t=>{g.title=t;save();if(!home)$('#ttl').textContent=t;render()})],
 ['書き出し・コピー',exportMenu],
 ['削除',()=>{const d=g;G=G.filter(x=>x!==g);g=null;persist();tomb(d);show('home')},'dg']])}
 $('#fab').onclick=()=>sheet([['新規作成',()=>dlg('新規棋譜','',0,t=>{const o=mkGame(t);openGame(o);save()})],['KIF／JSONテキストを取り込む',()=>dlg('取り込み','',1,(t,k)=>{try{importText(k||'',t)}catch(e){toast('取り込めません: '+e.message)}})],['ファイルから取り込む（.kif／.json）',importFile]]);
-$('#mn').onclick=()=>gMenu(false);$('#bk').onclick=()=>{if(view==='tree')show('game');else{g=null;show('home')}};
+$('#mn').onclick=()=>gMenu(false);$('#bk').onclick=()=>{if(view==='tree')show('game');else{if(TR){TR=null;flip=false}g=null;show('home')}};
 document.querySelectorAll('[data-t]').forEach(e=>e.onclick=()=>toast('準備中です'));
 function path(){const a=[];for(let n=cur;n.par;n=n.par)a.unshift(n);for(let n=cur.ch[0];n;n=n.ch[0])a.push(n);return a}
 const PN={歩:'歩兵',香:'香車',桂:'桂馬',銀:'銀將',金:'金將',飛:'飛車',角:'角行',と:'と',杏:'成香',圭:'成桂',全:'成銀',馬:'龍馬',龍:'龍王'};
@@ -245,7 +269,7 @@ ys.forEach(y=>{xs.forEach(x=>{const c=document.createElement('div'),p=st.b[y][x]
 if(p)c.append(pcEl(p.p,p.s,(p.s===1)!==flip));
 c.onclick=()=>tap(x,y);bd.append(c)});const l=document.createElement('div');l.className='lb';l.textContent=RK[y-1];bd.append(l)});
 {const w=bd.clientWidth;if(w)$('#bw').style.setProperty('--cs',((w-14)/9)+'px')}rHand(0);rHand(1);drawArrows();
-const ml=$('#ml');ml.innerHTML='';const ps=path();
+const ml=$('#ml');ml.innerHTML='';const ps=(TR&&TR.on)?pathTo(cur):path();
 const st0=document.createElement('div');st0.className='mv'+(cur===g.root?' cu':'');st0.innerHTML='<span>開始局面</span>';st0.onclick=()=>{cur=g.root;sel=null;rGame()};ml.append(st0);
 ps.forEach((n,i)=>{const d=document.createElement('div');d.className='mv'+(n===cur?' cu':'')+(n.sg?' sg':'');const sp=document.createElement('span');sp.textContent=(i+1)+'. '+n.lab;if(EVC.on){const ev=nodeEv(n),dt=document.createElement('b');dt.className='dot';dt.style.background=ev==null?'transparent':evColor(ev);d.append(dt)}d.append(sp);
 if(n.par.ch.length>1){const b=document.createElement('i');b.textContent=open===n?'⌃':'⌄';b.onclick=e=>{e.stopPropagation();open=open===n?null:n;rGame()};d.append(b)}
@@ -253,7 +277,7 @@ lp(d,n,i);d.onclick=()=>{if(LPF){LPF=false;return}const br=n.par.ch.length>1;ope
 if(open===n)n.par.ch.forEach(c=>{const s=document.createElement('div');s.className='sib';s.textContent=(i+1)+'. '+c.lab+(c===n?'  ✓':'');s.onclick=()=>{cur=c;open=null;sel=null;rGame()};ml.append(s)})});
 const k=ml.querySelector('.cu');if(k)k.scrollIntoView({block:'nearest'});
 const cm=$('#cm');cm.value=cur.c||'';cm.oninput=()=>{cur.c=cm.value;save()};
-$('#t1').className=tab===1?'a':'';$('#game').classList.toggle('am',tab===2);$('#ba').style.background=tab===2?'rgba(255,255,255,.35)':'';cm.style.display=tab===1?'':'none';$('#an').style.display=tab===2?'':'none';$('#ml').style.display=tab===2?'none':'';rAnr(nog);autoTrig()}
+$('#t1').className=tab===1?'a':'';$('#game').classList.toggle('am',tab===2);$('#ba').style.background=tab===2?'var(--bd)':'';cm.style.display=tab===1?'':'none';$('#an').style.display=tab===2?'':'none';$('#ml').style.display=tab===2?'none':'';rAnr(nog);autoTrig();trBar()}
 const D={歩:[[0,-1]],桂:[[1,-2],[-1,-2]],銀:[[0,-1],[1,-1],[-1,-1],[1,1],[-1,1]],金:[[0,-1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1]],玉:[[0,-1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[1,1],[-1,1]],馬:[[0,-1],[0,1],[1,0],[-1,0]],龍:[[1,-1],[-1,-1],[1,1],[-1,1]]};
 D.と=D.杏=D.圭=D.全=D.金;
 const S={香:[[0,-1]],角:[[1,-1],[-1,-1],[1,1],[-1,1]],馬:[[1,-1],[-1,-1],[1,1],[-1,1]],飛:[[0,-1],[0,1],[1,0],[-1,0]],龍:[[0,-1],[0,1],[1,0],[-1,0]]};
@@ -274,7 +298,7 @@ function delFrom(n){const p=n.par;p.ch=p.ch.filter(c=>c!==n);for(let q=cur;q;q=q
 function lp(d,n,i){let t=null;const st=()=>{LPF=false;t=setTimeout(()=>{t=null;LPF=true;sheet([[(i+1)+'手目以降を削除（'+n.lab+'）',()=>delFrom(n),'dg']])},500)},cl=()=>{if(t){clearTimeout(t);t=null}};
 d.addEventListener('touchstart',st,{passive:true});['touchend','touchmove','touchcancel','mouseup','mouseleave'].forEach(k=>d.addEventListener(k,cl));
 d.addEventListener('mousedown',st);d.addEventListener('contextmenu',e=>e.preventDefault())}
-function tap(x,y){if(PVW){toast('プレビュー中です。終了してから操作してください');return}const st=getSt(cur),p=st.b[y][x];
+function tap(x,y){if(TR&&TR.on&&(TR.wait||TR.done||getSt(cur).side!==TR.side))return;if(PVW){toast('プレビュー中です。終了してから操作してください');return}const st=getSt(cur),p=st.b[y][x];
 if(sel&&sel.drop){if(p)return;const r=legal(st,{drop:sel.drop,tx:x,ty:y});if(r){toast(r);return}return addMove({drop:sel.drop,tx:x,ty:y})}
 if(sel){if(sel.x==x&&sel.y==y){sel=null;return rGame()}
 if(p&&p.s===st.side){sel={x,y};return rGame()}
@@ -322,9 +346,9 @@ tr.addEventListener('touchmove',e=>{if(e.touches.length===2&&pd){e.preventDefaul
 tr.addEventListener('touchend',e=>{if(e.touches.length<2)pd=0});
 tr.addEventListener('wheel',e=>{if(e.ctrlKey){e.preventDefault();const r=tr.getBoundingClientRect();zoomTo(Z*(e.deltaY<0?1.1:.9),e.clientX-r.left,e.clientY-r.top)}},{passive:false});
 const zc=f=>{const r=tr.getBoundingClientRect();zoomTo(Z*f,r.width/2,r.height/2)};$('#zi').onclick=()=>zc(1.25);$('#zo').onclick=()=>zc(.8)}
-$('#b0').onclick=()=>{cur=g.root;sel=null;rGame()};$('#b1').onclick=()=>{if(cur.par){cur=cur.par;sel=null;rGame()}};
-$('#b2').onclick=()=>{if(cur.ch[0]){cur=cur.ch[0];sel=null;rGame()}};$('#b3').onclick=()=>{while(cur.ch[0])cur=cur.ch[0];sel=null;rGame()};
-$('#fl').onclick=()=>{flip=!flip;rGame()};$('#tb').onclick=()=>show('tree');$('#t1').onclick=()=>{tab=1;rGame()};$('#ba').onclick=()=>{tab=tab===2?1:2;rGame()};
+$('#b0').onclick=()=>{if(TR&&TR.on)return;cur=g.root;sel=null;rGame()};$('#b1').onclick=()=>{if(TR&&TR.on)return;if(cur.par){cur=cur.par;sel=null;rGame()}};
+$('#b2').onclick=()=>{if(TR&&TR.on)return;if(cur.ch[0]){cur=cur.ch[0];sel=null;rGame()}};$('#b3').onclick=()=>{if(TR&&TR.on)return;while(cur.ch[0])cur=cur.ch[0];sel=null;rGame()};
+$('#fl').onclick=()=>{flip=!flip;rGame()};$('#tb').onclick=()=>{if(TR&&TR.on){toast('手順練習中は使えません');return}show('tree')};$('#t1').onclick=()=>{tab=1;rGame()};$('#ba').onclick=()=>{if(TR&&TR.on){toast('手順練習中は解析できません');return}tab=tab===2?1:2;rGame()};
 setSt('off');$('#cs').onclick=()=>{if(!cdb){window.fbLogin?window.fbLogin():toast('Firebaseの設定が未入力です')}else sheet([[(window.fbUser||'')+' でログイン中',()=>{}],['今すぐ同期',()=>sync()],['ログアウト',()=>window.fbLogout()]])};
 const ENGINE_URLS=['engine/yaneuraou.halfkp.js','engine/yaneuraou.halfkp.noeval.js','engine/yaneuraou.js'];
 const EN={yn:null,ready:false,busy:false,pend:false,last:null,auto:true,ms:3000,src:'内蔵',node:null,log:[],sug:true,off:false};let AN=null;
@@ -353,7 +377,7 @@ function rGraph(){const e=$('#ang');if(!e||!g||!cur)return;const ps=path(),N=Mat
 let d='',pv=false,cv=null;const dots=[];const ci=cur===g.root?0:ps.indexOf(cur)+1;
 ps.forEach((p,i)=>{const A=(AN&&AN.node===p&&AN.sc)?AN:p.an;if(A){const k=getSt(p).side?-1:1,sc=A.sc,v=sc.mate!=null?(sc.mate*k>0?2000:-2000):sc.cp*k;d+=(pv?'L':'M')+X(i+1).toFixed(1)+' '+Y(v).toFixed(1);pv=true;dots.push([X(i+1),Y(v),v]);if(i+1===ci)cv=v}else pv=false});
 let gr='';[-2000,-1000,0,1000,2000].forEach(v=>{gr+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}"/><text class="gt" x="2" y="${Y(v)+3}">${v}</text>`});
-e.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;background:var(--card);border:2px solid #d9a45a;border-radius:8px">${gr}<text class="gt" x="${L+4}" y="12">先手優勢</text><text class="gt" x="${L+4}" y="${H-5}">後手優勢</text><path d="${d}" fill="none" stroke="#1e40ff" stroke-width="2"/>${dots.map(([x,y,v])=>{const c=evColor(v);return c?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="${c}" stroke="#fff" stroke-width=".8"/>`:''}).join('')}<line id="gcur" x1="${X(ci)}" x2="${X(ci)}" y1="2" y2="${H-2}" stroke="#e53935" stroke-width="2"/>${cv!=null?`<text class="gt" x="${Math.min(X(ci)+3,W-30)}" y="${Y(cv)-4}" style="font-weight:700">${Math.round(cv)}</text>`:''}</svg>`;
+e.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;background:var(--card);border:2px solid #9fb7bd;border-radius:8px">${gr}<text class="gt" x="${L+4}" y="12">先手優勢</text><text class="gt" x="${L+4}" y="${H-5}">後手優勢</text><path d="${d}" fill="none" stroke="#1e40ff" stroke-width="2"/>${dots.map(([x,y,v])=>{const c=evColor(v);return c?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="${c}" stroke="#fff" stroke-width=".8"/>`:''}).join('')}<line id="gcur" x1="${X(ci)}" x2="${X(ci)}" y1="2" y2="${H-2}" stroke="#e53935" stroke-width="2"/>${cv!=null?`<text class="gt" x="${Math.min(X(ci)+3,W-30)}" y="${Y(cv)-4}" style="font-weight:700">${Math.round(cv)}</text>`:''}</svg>`;
 const sv=e.firstChild,rl=sv.querySelector('#gcur'),pick=ev=>{const r=sv.getBoundingClientRect(),px=(ev.clientX-r.left)/r.width*W,i=Math.round((px-L)/(W-L-R)*N);return i>=1&&i<=ps.length?ps[i-1]:null};
 sv.onmousemove=ev=>{const n=pick(ev);if(n&&n!==cur){HOLD=true;cur=n;sel=null;const x=X(ps.indexOf(n)+1);rl.setAttribute('x1',x);rl.setAttribute('x2',x);clearTimeout(HT);HT=setTimeout(()=>{HOLD=false;autoTrig()},700);rGame(true)}};
 sv.onmouseleave=()=>{clearTimeout(HT);HOLD=false;autoTrig()};
@@ -367,6 +391,7 @@ function pvEnd(){PVW=null;rGame()}
 function pvAdd(){if(!PVW)return;const p=PVW.pv.slice(0,PVW.k);PVW=null;p.forEach(u=>addMove(fromUsi(u)))}
 function drawArrows(){const bw=$('#bw'),bd=$('#bd');bw.querySelectorAll('svg.arw').forEach(x=>x.remove());if(PVW)return;
 let L=(AN&&AN.node===cur&&AN.lines)||{};if(!L[1]&&AN&&AN.node===cur&&AN.pv)L={...L,1:{pv:AN.pv}};
+if(TR&&TR.on){const ex=cur.ch.find(c=>!c.sg);L=ex&&TR.hint&&!TR.done?{1:{pv:[toUsi(ex.m)]}}:{}}
 const br=bd.getBoundingClientRect(),wr=bw.getBoundingClientRect(),W=wr.width,H=wr.height;if(!br.width||!W)return;
 const cs=(br.width-14)/9,ox=br.left-wr.left,oy=br.top-wr.top,cx=f=>ox+(flip?f-1:9-f)*cs+cs/2,cy=r=>oy+14+(flip?9-r:r-1)*cs+cs/2,col=['#e53935','#fb8c00','#1e88e5'],side=getSt(cur).side,hand=$('#h'+(side===(flip?1:0)?1:0));let h='';
 for(let i=3;i>=1;i--){const ln=L[i];if(!ln||!ln.pv||!UR.test(ln.pv[0]))continue;const m=fromUsi(ln.pv[0]),x2=cx(m.tx),y2=cy(m.ty),c=col[i-1],drop=!!m.drop;let x1=null,y1=null;
@@ -378,7 +403,7 @@ else h+=`<circle cx="${x2}" cy="${y2}" r="${cs*.36}" fill="none" stroke="${c}" s
 h+=`<circle cx="${x2}" cy="${y2}" r="${cs*.2}" fill="#fff" stroke="${c}" stroke-width="2"/><text x="${x2}" y="${y2+cs*.09}" text-anchor="middle" font-size="${cs*.26}" font-weight="700" fill="${c}">${['最','次','3'][i-1]}</text>`;
 if(drop)h+=`<text x="${x2+cs*.34}" y="${y2-cs*.22}" font-size="${cs*.3}" font-weight="700" fill="${c}" stroke="#fff" stroke-width="3" paint-order="stroke">${m.drop}打</text>`}
 if(h){const v=document.createElementNS('http://www.w3.org/2000/svg','svg');v.setAttribute('class','arw');v.setAttribute('viewBox','0 0 '+W+' '+H);v.style.cssText='position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:5;overflow:visible';v.innerHTML=h;bw.append(v)}}
-function autoTrig(){if(EN.ready&&EN.auto&&!EN.off&&!EN.batch&&!HOLD&&!PVW&&!cur.an&&EN.last!==cur){EN.last=cur;anSoon()}}
+function autoTrig(){if(!(TR&&TR.on)&&EN.ready&&EN.auto&&!EN.off&&!EN.batch&&!HOLD&&!PVW&&!cur.an&&EN.last!==cur){EN.last=cur;anSoon()}}
 const isSg=n=>{for(;n;n=n.par)if(n.sg)return true;return false};
 function suggest(n){if(!EN.sug||!n.an||isSg(n))return;const a=n.an;if(!a.pv||!a.pv.length||!UR.test(a.pv[0]))return;
 let st=getSt(n);try{const lab0=label(st,fromUsi(a.pv[0]));if(n.ch.some(c=>c.lab===lab0))return;let p=n;
@@ -391,7 +416,7 @@ function batchRun(list,force){const ps=(force?list:list.filter(n=>!n.an)).filter
 function batchStop(){EN.batch=null;if(EN.busy){EN.skip=true;EN.yn.postMessage('stop')}if(EN.origin){cur=EN.origin;EN.origin=null}rGame()}
 function batchMenu(){if(!EN.ready){toast('エンジンを起動してください');return}if(EN.batch){batchStop();return}
 sheet([['この局面から：すべて（再解析）',()=>batchFrom(true)],['この局面から：未解析のみ',()=>batchFrom(false)],['この変化：未解析のみ',()=>batchRun(path(),false)],['この変化：すべて（再解析）',()=>batchRun(path(),true)],['全分岐：未解析のみ',()=>batchRun(allNodes(),false)],['全分岐：すべて（再解析）',()=>batchRun(allNodes(),true)]])}
-document.addEventListener('keydown',e=>{if(view!=='game'||/INPUT|TEXTAREA|SELECT/.test((e.target||{}).tagName||''))return;
+document.addEventListener('keydown',e=>{if(TR&&TR.on)return;if(view!=='game'||/INPUT|TEXTAREA|SELECT/.test((e.target||{}).tagName||''))return;
 if(PVW){if(e.key==='ArrowLeft')pvStep(-1);else if(e.key==='ArrowRight')pvStep(1);else if(e.key==='Escape')pvEnd();else return;e.preventDefault();return}
 const mv=n=>{if(n){cur=n;sel=null;HOLD=false;rGame()}};
 if(e.key==='ArrowLeft')mv(cur.par);else if(e.key==='ArrowRight')mv(cur.ch.find(c=>!c.sg)||cur.ch[0]);
@@ -407,6 +432,27 @@ if(a<=600)return mixC(P[0],P[1],(a-200)/400);if(a<=1200)return mixC(P[1],P[2],(a
 function nodeEv(n){const A=(AN&&AN.node===n&&AN.sc)?AN:n.an;if(!A)return null;const k=getSt(n).side?-1:1,sc=A.sc;return sc.mate!=null?(sc.mate*k>0?2000:-2000):sc.cp*k}
 function fillEvc(){$('#evon').checked=EVC.on;[0,1,2].forEach(i=>{$('#evs'+i).value=EVC.sg[i];$('#evg'+i).value=EVC.gt[i]});$('#evgr').value=EVC.gray}
 function readEvc(){EVC.on=$('#evon').checked;EVC.sg=[0,1,2].map(i=>$('#evs'+i).value);EVC.gt=[0,1,2].map(i=>$('#evg'+i).value);EVC.gray=$('#evgr').value;saveEVC()}
+let TR=null;
+const UL={歩:'P',香:'L',桂:'N',銀:'S',金:'G',角:'B',飛:'R'};
+function toUsi(m){const r=y=>String.fromCharCode(96+y);return m.drop?UL[m.drop]+'*'+m.tx+r(m.ty):''+m.fx+r(m.fy)+m.tx+r(m.ty)+(m.pro?'+':'')}
+function pathTo(n){const a=[];for(;n.par;n=n.par)a.unshift(n);return a}
+const hasNext=n=>n.ch.some(c=>!c.sg);
+function trPick(){if(!G.length){toast('棋譜がありません。先に棋譜を作成してください');return}
+sheet([['棋譜を選んでください（1/2）',()=>{}],...[...G].sort((a,b)=>b.t-a.t).map(o=>[o.title,()=>trSide(o)])])}
+function trSide(o){if(!o.root.ch.length){toast('この棋譜には指し手がありません');return}
+sheet([['「'+o.title+'」 どちらで指しますか？（2/2）',()=>{}],['先手で練習',()=>trStart(o,0)],['後手で練習',()=>trStart(o,1)]])}
+function trStart(game,side){openGame(game);TR={on:true,side,ok:0,miss:0,mm:0,hint:false,wait:false,done:false};tab=1;flip=side===1;sel=null;rGame();if(side===1&&hasNext(cur))trReply()}
+function trReply(){const t=TR;t.wait=true;rGame();setTimeout(()=>{if(TR!==t)return;const n=cur.ch.find(c=>!c.sg);t.wait=false;if(n){cur=n;sel=null}rGame();if(!hasNext(cur))trEnd()},500)}
+function trMove(m){if(TR.wait||TR.done)return;const lab=label(getSt(cur),m),n=cur.ch.find(c=>!c.sg&&c.lab===lab);sel=null;
+if(!n){TR.miss++;TR.mm++;if(TR.mm>=3)TR.hint=true;toast('棋譜と違います。もう一度考えましょう');rGame();return}
+TR.ok++;TR.mm=0;TR.hint=false;cur=n;rGame();if(!hasNext(cur))trEnd();else trReply()}
+function trEnd(){TR.done=true;rGame();sheet([['完了！ 正解 '+TR.ok+'手 / 間違い '+TR.miss+'回',()=>{}],['もう一度練習する',()=>trStart(g,TR.side)],['終了する',trExit]])}
+function trExit(){TR=null;flip=false;rGame()}
+function trBar(){const b=$('#trb');if(!b)return;if(!(TR&&TR.on)){b.style.display='none';return}b.style.display='block';
+const my=getSt(cur).side===TR.side&&!TR.done;
+b.innerHTML='<b>手順練習</b>「'+esc(g.title)+'」 あなた：'+(TR.side?'後手':'先手')+'　正解 '+TR.ok+'　間違い '+TR.miss+'<div style="margin:4px 0;font-weight:700;color:'+(TR.done?'#2e7d32':my?'#17808a':'var(--sub)')+'">'+(TR.done?'完了しました':my?'あなたの番です':'相手が指しています…')+'</div><button class="ab" id="trh">ヒント</button><button class="ab" id="trr">やり直し</button><button class="ab" id="trx">終了</button>';
+$('#trh').onclick=()=>{TR.hint=true;rGame()};$('#trr').onclick=()=>trStart(g,TR.side);$('#trx').onclick=trExit}
+$('#ntr').onclick=trPick;
 function batchFrom(force){if(!EN.ready){toast('エンジンを起動してください');return}if(EN.batch){batchStop();return}const ps=path(),i=ps.indexOf(cur);batchRun(i<0?ps:ps.slice(i),force)}
 function aiDlg(){const o=document.createElement('div');o.className='ov';const s=document.createElement('div');s.className='sh';s.style.cssText='max-height:85vh;overflow:auto';
 s.innerHTML=`<div style="font-weight:700;padding:15px 22px">AI設定</div><div class="st" style="padding:0 12px"><label>探索方式<span><select id="sm"><option value="infinite">無制限</option><option value="movetime">時間(秒)</option><option value="nodes">ノード数</option><option value="depth">深さ</option></select> <input type="number" id="sv" min="1"></span></label><label>スレッド数<input type="number" id="sth" min="1" max="256"></label><label>ハッシュ(MB)<select id="shs">${[16,32,64,128,256,512,1024,2048,4096,8192,16384,32768].map(v=>'<option>'+v+'</option>').join('')}</select></label><label>候補手数(MultiPV)<input type="number" id="smp" min="1" max="5"></label><div style="color:var(--sub);font-size:12px;padding:6px 10px">この端末の論理コア数: ${navigator.hardwareConcurrency||'不明'}。「適用」で反映されます（解析中でも再起動は不要です）。</div></div><div style="padding:8px 22px 0;font-weight:700">評価値の色分け（点の色）</div><div class="st" style="padding:0 12px"><label><span>色をつける</span><input type="checkbox" id="evon"></label><label><span>先手 やや有利／優勢／勝勢</span><span><input type="color" id="evs0"><input type="color" id="evs1"><input type="color" id="evs2"></span></label><label><span>後手 やや有利／優勢／勝勢</span><span><input type="color" id="evg0"><input type="color" id="evg1"><input type="color" id="evg2"></span></label><label><span>互角（±200以内）</span><input type="color" id="evgr"></label><div style="color:var(--sub);font-size:12px;padding:4px 10px">解析済みの手に、グラフ・指し手リスト・ツリーで点が付きます。±200以内は灰色、それを超えると、やや有利→優勢→勝勢の順に色が濃くなります。</div><div id="evr" style="color:var(--sub);padding:6px 10px">色を初期値に戻す</div></div><div class="ok" id="sap">適用</div><div id="srs" style="color:var(--sub)">初期値に戻す</div>`;
