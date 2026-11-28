@@ -174,104 +174,6 @@ let G=[],g=null,cur=null,sel=null,view='home',flip=false,open=null,tab=1;
 try{G=JSON.parse(localStorage.getItem('kifu')||'[]')}catch(e){}
 const rep=(k,v)=>k==='st'||k==='par'||k==='_o'||k==='_tm'?undefined:v;
 let cdb=null,cuid=null;
-function persist(){try{localStorage.setItem('kifu',JSON.strid-area:mid;border-top:0;border-left:1px solid var(--ln);min-height:0}
-#ctl{grid-area:ctl}
-.hp .pc{width:46px;height:52px;font-size:23px}.hand{width:64px}
-}
-/* ---- 解析モード（下のボタンから切替・広く表示） ---- */
-#game.am .tabs{display:none}
-#game.am #bd{max-width:34vh}
-#an{font-size:15px}.pvb{font-size:15px;line-height:1.8}
-#game.am #an{padding:8px 10px}
-@media(min-width:820px) and (min-height:560px) and (orientation:landscape){
-#game.am{grid-template-columns:minmax(0,1fr) max(460px,44vw)}
-#game.am #bd{max-width:none;width:min(calc(100dvh - 150px),calc(100vw - max(460px,44vw) - 110px))}
-}
-@font-face{font-family:'Shoryu';src:url('fonts/shoryu.woff2') format('woff2'),url('fonts/shoryu.ttf') format('truetype'),url('fonts/shoryu.otf') format('opentype');font-display:swap}
-#ens{white-space:pre-wrap;word-break:break-all}
-.eo{display:flex!important;justify-content:space-between;align-items:center;gap:10px;padding:8px 22px!important}.eo span{flex:1;word-break:break-all;font-size:13px}.eo input[type=number],.eo input[type=text],.eo select{width:48%!important;margin:0!important}
-/* ---- 解析モード v2 ---- */
-#bd{position:relative}
-#game.am #bd{max-width:26vh}
-.atb{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}.atb td{padding:5px 6px;border-bottom:1px solid var(--ln);vertical-align:top}.atb tr.arow{cursor:pointer}.atb tr.arow:hover{background:var(--sel)}.atb td.pv{color:var(--sub);word-break:break-all}.ap{padding:2px 8px!important}
-.card{border:2px solid #9fb7bd;border-radius:10px;padding:8px 10px;margin:8px 0;background:var(--card)}.sgc{border-color:#43a047}
-.mv.sg{color:#2e7d32;font-style:italic}.tn.sg{background:#e8f5e9!important;color:#1b5e20!important;border:1px dashed #43a047!important}
-@media(min-width:820px) and (min-height:560px) and (orientation:landscape){
-#game.am{grid-template-columns:max(300px,26vw) minmax(0,1fr)}
-#game.am #bd{max-width:none;width:min(calc(100dvh - 150px),calc(max(300px,26vw) - 100px))}
-}
-/* ---- 解析モード v3 ---- */
-.gt{font-size:11px}
-/* ---- レイアウト v4 ---- */
-#bw{--cs:30px}
-.hand{width:calc(var(--cs)*1.15)}
-.hp{padding:1px 0 1px 2px!important}
-.hp .pc{width:calc(var(--cs)*.92)!important;height:calc(var(--cs)*1.02)!important;font-size:calc(var(--cs)*.4)!important}
-.cnt{font-size:calc(var(--cs)*.4);left:-3px}
-#an{display:flex;flex-direction:column;overflow:auto}
-#ang{order:0;flex:none}#anc{order:1;flex:none}#anr{order:2;flex:none}
-.atb{table-layout:fixed}.atb td.pv{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ah{min-height:44px}
-@media(min-width:820px) and (min-height:560px) and (orientation:landscape){
-#game.am{grid-template-columns:minmax(420px,44vw) minmax(0,1fr)}
-#game.am #bw{max-width:100%;overflow:hidden;align-self:start;margin-top:6px}
-#game.am #bd{max-width:none;width:min(calc(100dvh - 150px),calc((max(420px,44vw) - 24px)*.78))}
-#an{overflow:hidden}
-#anr{flex:1;min-height:0;overflow:auto}
-}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;flex:none}
-.st input[type=color]{width:42px!important;height:30px;padding:0!important;margin:0 3px!important;border:1px solid var(--ln)}
-#bw{position:relative}
-.pc i.one{font-size:1.3em}
-#tbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 10px;border-bottom:1px solid var(--ln);background:var(--card);flex:none}#tbar select{font-size:13px;max-width:100%;padding:4px}#tfn{color:var(--sub);font-size:12px}
-.tn.dim{opacity:.4}.tgl{position:absolute;right:4px;top:50%;margin-top:-9px;min-width:18px;height:18px;line-height:18px;padding:0 4px;text-align:center;border-radius:9px;background:var(--hd);color:var(--hdt);font-size:11px}
-#trb{padding:8px 10px;background:var(--card);border-left:5px solid var(--hd);border-bottom:1px solid var(--ln);font-size:14px;flex:none}
-.sh{max-height:80vh;overflow:auto}
-/* ===== 見た目の刷新: 紺×ティール、カード型一覧、チップ型の指し手リスト ===== */
-:root{--hd:#a8d8dc;--hdt:#1b3f45;--bg:#f6f9f9;--ac:#2b8a93;--bd:#d6ecee;--bt:#a9cfd3;--sel:#e3f1f2;--ln:#e1eaeb;--wood:#a9d3d0;--tray1:#c4e3e0;--tray2:#a3d0cd;--trayl:#a9d3d0;--trayt:#1e4448}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--hd:#33535c;--hdt:#e9f2f3;--bg:#162027;--card:#1f2c33;--ac:#6ccbd3;--bd:#2a4b51;--bt:#44737a;--sel:#2a3a43;--ln:#31404a;--wood:#243842;--tray1:#35525d;--tray2:#24404a;--trayl:#243842;--trayt:#cfe3e6}}
-:root[data-theme="dark"]{--hd:#33535c;--hdt:#e9f2f3;--bg:#162027;--card:#1f2c33;--ac:#6ccbd3;--bd:#2a4b51;--bt:#44737a;--sel:#2a3a43;--ln:#31404a;--wood:#243842;--tray1:#35525d;--tray2:#24404a;--trayl:#243842;--trayt:#cfe3e6}
-header h1{font-weight:600;letter-spacing:.04em}
-.hbar{display:flex;gap:8px;align-items:center;padding:10px 12px;width:100%;max-width:980px;align-self:center;flex:none}
-.pills{display:flex;gap:6px;flex-wrap:wrap}
-.pill{border:1px solid var(--ln);background:var(--card);color:var(--fg);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer}
-.pill.on{background:var(--hd);color:var(--hdt);border-color:var(--hd)}
-.fab{position:static!important;width:auto;height:auto;margin-left:auto;padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;background:var(--ac);color:#fff;box-shadow:none}
-#list{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;padding:0 12px 24px;align-content:start;max-width:980px}
-.it{border:1px solid var(--ln);border-radius:14px;background:var(--card);padding:12px;gap:12px}
-.it b{font-size:16px}.it small{display:block;margin-top:2px}
-.it .bk{width:40px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--ac);color:#fff;font-weight:700;font-size:18px;clip-path:polygon(50% 0,92% 16%,100% 100%,0 100%,8% 16%)}
-#bw{background:linear-gradient(160deg,var(--tray1),var(--tray2))!important;border-radius:14px}
-#bd{background-color:#ecd9ac}
-#bd .lb{background:var(--trayl)!important;color:var(--trayt)}
-.cnt{color:var(--trayt)!important}
-#ctl{background:var(--card)!important;color:var(--fg)!important;margin:8px 10px;border-radius:14px;border:1px solid var(--ln);overflow:hidden}
-#ctl button{color:var(--fg)!important;height:46px}#ctl button:active{background:var(--sel)}
-@media(max-width:819px){
-#game.on #bw{order:0;margin:8px 10px 0}#game.on #ctl{order:1}#game.on #mid{order:2}
-}
-</style><script>
-if(!self.crossOriginIsolated&&'serviceWorker' in navigator&&location.protocol==='https:'){const n=+sessionStorage.getItem('coi')||0,rl=()=>{if(n<3){sessionStorage.setItem('coi',n+1);location.reload()}};
-navigator.serviceWorker.addEventListener('controllerchange',rl);
-navigator.serviceWorker.register('coi-sw.js').then(r=>{r.update();if(r.active&&!navigator.serviceWorker.controller)rl()}).catch(e=>console.warn('SW',e))}
-</script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yuji+Boku&family=Yuji+Mai&family=Yuji+Syuku&family=Zen+Antique&text=%E6%AD%A9%E5%85%B5%E9%A6%99%E8%BB%8A%E6%A1%82%E9%A6%AC%E9%8A%80%E5%B0%87%E9%87%91%E7%8E%8B%E7%8E%89%E9%A3%9B%E8%A7%92%E9%BE%8D%E6%88%90%E3%81%A8%E5%85%A8%E5%9C%AD%E6%9D%8F&display=swap">
-</head><body>
-<header><button class="ib" id="bk" style="display:none">←</button><h1 id="ttl">棋譜ラボ</h1><button class="ib" id="ai" style="font-size:13px;width:auto;padding:0 8px">AI設定</button><button class="ib" id="cs" style="font-size:13px;width:auto;padding:0 8px">☁</button><button class="ib" id="mn">⋮</button></header>
-<main>
-<section class="v on" id="home"><div class="hbar"><div class="pills"><button class="pill on">棋譜</button><button class="pill" id="ntr">練習</button><button class="pill" data-t>設定</button></div><button class="fab" id="fab">＋ 新規</button></div><div id="list"></div></section>
-<section class="v" id="game"><div id="bw"><div class="hand" id="h0"></div><div id="bd"></div><div class="hand" id="h1"></div></div>
-<div id="mid"><div id="ml"></div><div id="rt"><div id="trb" style="display:none"></div><div class="tabs"><div class="a" id="t1">コメント</div></div><textarea id="cm" placeholder="コメントを入力"></textarea><div id="an" style="display:none"><div id="ang"></div><div id="anr"></div><div id="anc"></div></div></div></div>
-<div id="ctl"><button id="b0">«</button><button id="b1">‹</button><button id="b2">›</button><button id="b3">»</button><button id="fl" style="font-size:16px;font-weight:700">反転</button><button id="ba" style="font-size:16px;font-weight:700">解析</button><button id="tb" style="font-size:16px;font-weight:700">分岐</button></div></section>
-<section class="v" id="tree"><div id="tbar"><select id="tfm"><option value="all">すべての手</option><option value="main">本譜のみ</option><option value="sente">先手が優勢（+200超）</option><option value="gote">後手が優勢（-200未満）</option><option value="even">互角（±200以内）</option><option value="win">勝勢（±1200超）</option><option value="bad">悪手（評価が300以上下がった）</option><option value="unan">未解析の手</option><option value="sg">解析の提案（緑）</option><option value="cm">コメントあり</option></select><button class="ab" id="tfx">分岐を全部開く</button><button class="ab" id="tfc">分岐を全部閉じる</button><button class="ab" id="tfh">現在の手へ</button><span id="tfn"></span></div><div id="tr"></div><div class="zb"><button id="zi">＋</button><button id="zo">−</button></div></section>
-</main><div id="toast"></div>
-<script>
-const $=s=>document.querySelector(s),P={歩:'と',香:'杏',桂:'圭',銀:'全',角:'馬',飛:'龍'},U={};for(const k in P)U[P[k]]=k;
-const LN={と:'と',杏:'成香',圭:'成桂',全:'成銀',馬:'馬',龍:'龍'},RK='一二三四五六七八九',HO='飛角金銀桂香歩';
-let G=[],g=null,cur=null,sel=null,view='home',flip=false,open=null,tab=1;
-try{G=JSON.parse(localStorage.getItem('kifu')||'[]')}catch(e){}
-const rep=(k,v)=>k==='st'||k==='par'||k==='_o'||k==='_tm'?undefined:v;
-let cdb=null,cuid=null;
 function persist(){try{localStorage.setItem('kifu',JSON.stringify(G,rep))}catch(e){}}
 function save(){if(g){g.t=Date.now();cloudSave(g)}persist()}
 const ck=id=>id.replace(/[^\w-]/g,'_'),cref=o=>cdb.doc('users/'+cuid+'/kifu/'+ck(o.id));
@@ -372,7 +274,7 @@ c.onclick=()=>tap(x,y);bd.append(c)});const l=document.createElement('div');l.cl
 {const w=bd.clientWidth;if(w)$('#bw').style.setProperty('--cs',((w-14)/9)+'px')}rHand(0);rHand(1);drawArrows();
 const ml=$('#ml');ml.innerHTML='';const ps=(TR&&TR.on)?pathTo(cur):path();
 const st0=document.createElement('div');st0.className='mv'+(cur===g.root?' cu':'');st0.innerHTML='<span>開始局面</span>';st0.onclick=()=>{cur=g.root;sel=null;rGame()};ml.append(st0);
-ps.forEach((n,i)=>{const d=document.createElement('div');d.className='mv'+(n===cur?' cu':'')+(n.sg?' sg':'');const sp=document.createElement('span');sp.textContent=(i+1)+'. '+n.lab;if(EVC.on){const ev=nodeEv(n),dt=document.createElement('b');dt.className='dot';dt.style.background=ev==null?'transparent':evColor(ev);d.append(dt)}d.append(sp);
+ps.forEach((n,i)=>{const d=document.createElement('div');d.className='mv'+(n===cur?' cu':'')+(n.sg?' sg':'');const sp=document.createElement('span');sp.textContent=(i+1)+'. '+n.lab;if(EVC.on){const ev=nodeEv(n),dt=document.createElement('b');dt.className='dot';dt.style.background=ev==null?'transparent':evColor(ev);d.append(dt)}d.append(sp);{const jd=judgeOf(n);if(jd&&jd.kind){const e=document.createElement('em');e.className='jb '+jd.kind;e.textContent=JL[jd.kind];e.title='最善手との評価値の差 '+jd.loss;d.append(e)}}
 if(n.par.ch.length>1){const b=document.createElement('i');b.textContent=open===n?'⌃':'⌄';b.onclick=e=>{e.stopPropagation();open=open===n?null:n;rGame()};d.append(b)}
 lp(d,n,i);d.onclick=()=>{if(LPF){LPF=false;return}const br=n.par.ch.length>1;open=br&&!(cur===n&&open===n)?n:null;cur=n;sel=null;rGame()};ml.append(d);
 if(open===n)n.par.ch.forEach(c=>{const s=document.createElement('div');s.className='sib';s.textContent=(i+1)+'. '+c.lab+(c===n?'  ✓':'');s.onclick=()=>{cur=c;open=null;sel=null;rGame()};ml.append(s)})});
@@ -408,10 +310,29 @@ const pc=st.b[sel.y][sel.x],fx=sel.x,fy=sel.y,z=s=>s?y>=7:y<=3,z0=st.side?fy>=7:
 if(P[pc.p]&&(z0||z1)){const must=(pc.p==='歩'||pc.p==='香')&&(st.side?y===9:y===1)||pc.p==='桂'&&(st.side?y>=8:y<=2);if(must)return go(true);return sheet([['成る',()=>go(true)],['成らない',()=>go(false)]])}
 return go(false)}
 if(p&&p.s===st.side){sel={x,y};rGame()}}
+const JD_DEF=()=>({on:true,q:150,b:300,x:700,g:200});
+const JD=Object.assign(JD_DEF(),(()=>{try{return JSON.parse(localStorage.getItem('jd')||'{}')}catch(e){return{}}})());
+const saveJD=()=>{try{localStorage.setItem('jd',JSON.stringify(JD))}catch(e){}};
+const JL={good:'好手',q:'疑問手',bad:'悪手',big:'大悪手'},JC={good:'#1b9a6c',q:'#d9a300',bad:'#e0612b',big:'#c62828'};
+const jv=sc=>sc.mate!=null?(sc.mate>0?3000:-3000):sc.cp,jcl=v=>Math.max(-1500,Math.min(1500,v));
+const anOf=n=>(AN&&AN.node===n&&AN.sc)?AN:n.an;
+function judgeOf(n){if(!JD.on)return null;const p=n.par;if(!p||!n.m)return null;const pa=anOf(p);if(!pa||!pa.sc)return null;
+const u=toUsi(n.m),best=pa.best&&UR.test(pa.best)?pa.best:(pa.pv&&pa.pv[0]),bv=jv(pa.sc),ca=anOf(n);let av=null;
+if(ca&&ca.sc)av=-jv(ca.sc);else if(pa.lines)for(const k in pa.lines){const L=pa.lines[k];if(L&&L.pv&&L.pv[0]===u){av=jv(L.sc);break}}
+if(av==null&&u===best)av=bv;if(av==null)return null;
+const loss=Math.max(0,jcl(bv)-jcl(av)),isBest=u===best;let gap=null;if(pa.lines&&pa.lines[2]&&pa.lines[2].sc)gap=jcl(bv)-jcl(jv(pa.lines[2].sc));
+let kind=null;if(loss>=JD.x)kind='big';else if(loss>=JD.b)kind='bad';else if(loss>=JD.q)kind='q';else if((isBest||loss<=20)&&gap!=null&&gap>=JD.g)kind='good';
+return{kind,loss,best,isBest,gap}}
+function judgeSum(){if(!JD.on)return'';const S=[0,1].map(()=>({n:0,l:0,c:{good:0,q:0,bad:0,big:0}}));
+path().forEach(n=>{const j=judgeOf(n);if(!j)return;const o=S[getSt(n.par).side];o.n++;o.l+=j.loss;if(j.kind)o.c[j.kind]++});
+if(!S[0].n&&!S[1].n)return'';const row=(t,o)=>o.n?'<tr><td>'+t+'</td><td>'+o.n+'手</td><td>'+o.c.good+'</td><td>'+o.c.q+'</td><td>'+o.c.bad+'</td><td>'+o.c.big+'</td><td>'+Math.round(o.l/o.n)+'</td></tr>':'';
+return'<div class="card"><b>この変化の判定</b><table class="atb" style="table-layout:auto"><tr style="color:var(--sub)"><td></td><td>判定数</td><td>好手</td><td>疑問手</td><td>悪手</td><td>大悪手</td><td>平均損失</td></tr>'+row('先手',S[0])+row('後手',S[1])+'</table></div>'}
+function jdFill(){$('#jdon').checked=JD.on;$('#jdq').value=JD.q;$('#jdb').value=JD.b;$('#jdx').value=JD.x;$('#jdg').value=JD.g}
+function jdRead(){JD.on=$('#jdon').checked;const q=Math.max(0,+$('#jdq').value||0),b=Math.max(q,+$('#jdb').value||q),x=Math.max(b,+$('#jdx').value||b);JD.q=q;JD.b=b;JD.x=x;JD.g=Math.max(0,+$('#jdg').value||0);saveJD()}
 const TF=Object.assign({mode:'all'},(()=>{try{return JSON.parse(localStorage.getItem('tf')||'{}')}catch(e){return{}}})());
 let COLS=new WeakSet(),TFS=null;
 function tfMatch(n,m){const v=nodeEv(n);switch(m){case'sente':return v!=null&&v>200;case'gote':return v!=null&&v<-200;case'even':return v!=null&&Math.abs(v)<=200;case'win':return v!=null&&Math.abs(v)>1200;case'unan':return v==null;case'sg':return !!n.sg;case'cm':return !!(n.c&&n.c.trim());
-case'bad':{const p=n.par;if(!p||p===g.root)return false;const pv=nodeEv(p);if(v==null||pv==null)return false;return(getSt(p).side?v-pv:pv-v)>=300}}return true}
+case'bad':{const j=judgeOf(n);return !!j&&(j.kind==='bad'||j.kind==='big')}case'q':{const j=judgeOf(n);return !!j&&!!j.kind&&j.kind!=='good'}case'good':{const j=judgeOf(n);return !!j&&j.kind==='good'}}return true}
 function tfKeep(){const m=TF.mode;TFS=null;if(m==='all')return null;const keep=new Set();
 if(m==='main'){for(let n=g.root.ch.find(c=>!c.sg);n;n=n.ch.find(c=>!c.sg))keep.add(n);return keep}
 TFS=new Set();const f=n=>n.ch.forEach(c=>{if(tfMatch(c,m)){TFS.add(c);for(let q=c;q&&q!==g.root;q=q.par)keep.add(q)}f(c)});f(g.root);return keep}
@@ -433,7 +354,7 @@ if(p){const x1=cx(p.c),y1=ty(p.d)+BH;sv+=x1==x2?`M${x1} ${y1}V${y2}`:`M${x1} ${y
 else if(o.c>0){sv+=`M${cx(0)} ${ym}H${x2}V${y2}`}});
 t.innerHTML=`<div style="position:relative;width:${w}px;height:${h}px"><svg width="${w}" height="${h}" style="position:absolute;left:0;top:0"><path d="${sv}" fill="none" style="stroke:var(--sub);stroke-width:1.5;opacity:.6"/></svg></div>`;
 const box=t.firstChild;L.forEach(o=>{const b=document.createElement('div');b.className='tn'+(o.v?' v':'')+(o.n.sg?' sg':'')+(TFS&&!TFS.has(o.n)?' dim':'')+(o.n===cur?' cu':'');
-b.style.cssText=`left:${o.c*W+(W-BW)/2}px;top:${ty(o.d)}px;width:${BW}px;height:${BH}px`;b.textContent=o.d+'.'+o.n.lab;{const ev=nodeEv(o.n);if(EVC.on&&ev!=null){const dt=document.createElement('b');dt.className='dot';dt.style.cssText='background:'+evColor(ev)+';position:absolute;left:6px;top:50%;margin-top:-5px';b.append(dt)}}
+b.style.cssText=`left:${o.c*W+(W-BW)/2}px;top:${ty(o.d)}px;width:${BW}px;height:${BH}px`;b.textContent=o.d+'.'+o.n.lab;{const jd=judgeOf(o.n);if(jd&&jd.kind){const e=document.createElement('em');e.className='jb '+jd.kind;e.textContent=JL[jd.kind];b.append(e)}}{const ev=nodeEv(o.n);if(EVC.on&&ev!=null){const dt=document.createElement('b');dt.className='dot';dt.style.cssText='background:'+evColor(ev)+';position:absolute;left:6px;top:50%;margin-top:-5px';b.append(dt)}}
 {const nb=o.n.ch.filter(c=>!keep||keep.has(c)).length,cl=COLS.has(o.n);if(nb>1||cl){const tg=document.createElement('span');tg.className='tgl';tg.textContent=cl?'▸'+tfCnt(o.n,keep):'▾';tg.title=cl?'分岐を開く':'分岐を閉じる';tg.onclick=e=>{e.stopPropagation();if(cl)COLS.delete(o.n);else COLS.add(o.n);rTree(true)};b.style.paddingRight='26px';b.append(tg)}}
 b.onclick=()=>{cur=o.n;sel=null;show('game')};box.append(b)});
 const wr=document.createElement('div');t.append(wr);wr.append(box);box.style.transformOrigin='0 0';TZ={box,wr,w,h};applyZ();
@@ -475,10 +396,10 @@ const dep=n=>{let d=0;for(;n.par;n=n.par)d++;return d};
 const idb=(m,k,v)=>new Promise((ok,ng)=>{const q=indexedDB.open('kifu-en',1);q.onupgradeneeded=()=>q.result.createObjectStore('f');q.onsuccess=()=>{const t=q.result.transaction('f',m),o=t.objectStore('f'),r=m==='readwrite'?o.put(v,k):o.get(k);t.oncomplete=()=>ok(r.result);t.onerror=()=>ng(t.error)};q.onerror=()=>ng(q.error)});
 function syncAN(){if((!AN||AN.node!==cur)&&cur.an&&!(EN.busy&&EN.node===cur))AN={node:cur,lines:{},...cur.an}}
 function rGraph(){const e=$('#ang');if(!e||!g||!cur)return;const ps=path(),N=Math.max(ps.length,20),W=Math.max(300,Math.round(e.clientWidth||340)),H=Math.max(100,Math.min(Math.round((innerHeight||800)*.17),Math.round(W*.24))),L=40,R=8,X=i=>L+(W-L-R)*i/N,Y=v=>H/2-Math.max(-2000,Math.min(2000,v))/2000*(H/2-10);
-let d='',pv=false,cv=null;const dots=[];const ci=cur===g.root?0:ps.indexOf(cur)+1;
-ps.forEach((p,i)=>{const A=(AN&&AN.node===p&&AN.sc)?AN:p.an;if(A){const k=getSt(p).side?-1:1,sc=A.sc,v=sc.mate!=null?(sc.mate*k>0?2000:-2000):sc.cp*k;d+=(pv?'L':'M')+X(i+1).toFixed(1)+' '+Y(v).toFixed(1);pv=true;dots.push([X(i+1),Y(v),v]);if(i+1===ci)cv=v}else pv=false});
+let d='',pv=false,cv=null;const dots=[],rings=[];const ci=cur===g.root?0:ps.indexOf(cur)+1;
+ps.forEach((p,i)=>{const A=(AN&&AN.node===p&&AN.sc)?AN:p.an;if(A){const k=getSt(p).side?-1:1,sc=A.sc,v=sc.mate!=null?(sc.mate*k>0?2000:-2000):sc.cp*k;d+=(pv?'L':'M')+X(i+1).toFixed(1)+' '+Y(v).toFixed(1);pv=true;dots.push([X(i+1),Y(v),v]);{const jd=judgeOf(p);if(jd&&jd.kind)rings.push([X(i+1),Y(v),jd.kind])}if(i+1===ci)cv=v}else pv=false});
 let gr='';[-2000,-1000,0,1000,2000].forEach(v=>{gr+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}"/><text class="gt" x="2" y="${Y(v)+3}">${v}</text>`});
-e.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;background:var(--card);border:2px solid #9fb7bd;border-radius:8px">${gr}<text class="gt" x="${L+4}" y="12">先手優勢</text><text class="gt" x="${L+4}" y="${H-5}">後手優勢</text><path d="${d}" fill="none" stroke="#1e40ff" stroke-width="2"/>${dots.map(([x,y,v])=>{const c=evColor(v);return c?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="${c}" stroke="#fff" stroke-width=".8"/>`:''}).join('')}<line id="gcur" x1="${X(ci)}" x2="${X(ci)}" y1="2" y2="${H-2}" stroke="#e53935" stroke-width="2"/>${cv!=null?`<text class="gt" x="${Math.min(X(ci)+3,W-30)}" y="${Y(cv)-4}" style="font-weight:700">${Math.round(cv)}</text>`:''}</svg>`;
+e.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;background:var(--card);border:2px solid #9fb7bd;border-radius:8px">${gr}<text class="gt" x="${L+4}" y="12">先手優勢</text><text class="gt" x="${L+4}" y="${H-5}">後手優勢</text><path d="${d}" fill="none" stroke="#1e40ff" stroke-width="2"/>${dots.map(([x,y,v])=>{const c=evColor(v);return c?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="${c}" stroke="#fff" stroke-width=".8"/>`:''}).join('')}${rings.map(([x,y,k])=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" fill="none" stroke="${JC[k]}" stroke-width="2"/>`).join('')}<line id="gcur" x1="${X(ci)}" x2="${X(ci)}" y1="2" y2="${H-2}" stroke="#e53935" stroke-width="2"/>${cv!=null?`<text class="gt" x="${Math.min(X(ci)+3,W-30)}" y="${Y(cv)-4}" style="font-weight:700">${Math.round(cv)}</text>`:''}</svg>`;
 const sv=e.firstChild,rl=sv.querySelector('#gcur'),pick=ev=>{const r=sv.getBoundingClientRect(),px=(ev.clientX-r.left)/r.width*W,i=Math.round((px-L)/(W-L-R)*N);return i>=1&&i<=ps.length?ps[i-1]:null};
 sv.onmousemove=ev=>{const n=pick(ev);if(n&&n!==cur){HOLD=true;cur=n;sel=null;const x=X(ps.indexOf(n)+1);rl.setAttribute('x1',x);rl.setAttribute('x2',x);clearTimeout(HT);HT=setTimeout(()=>{HOLD=false;autoTrig()},700);rGame(true)}};
 sv.onmouseleave=()=>{clearTimeout(HT);HOLD=false;autoTrig()};
@@ -512,11 +433,11 @@ for(const u of a.pv.slice(0,6)){if(!UR.test(u))break;const m=fromUsi(u),lab=labe
 function sgRoot(){for(let q=cur;q;q=q.par)if(q.sg&&!(q.par&&q.par.sg))return q;return cur.ch.find(c=>c.sg)||null}
 function sgAccept(r){const f=n=>{delete n.sg;n.ch.forEach(f)};f(r);save();rGame()}
 function sgDrop(r){const p=r.par;p.ch=p.ch.filter(c=>c!==r);for(let q=cur;q;q=q.par)if(q===r){cur=p;break}save();rGame()}
-function allNodes(){const a=[],f=n=>n.ch.forEach(c=>{if(!c.sg){a.push(c);f(c)}});f(g.root);return a}
+function allNodes(){const a=[g.root],f=n=>n.ch.forEach(c=>{if(!c.sg){a.push(c);f(c)}});f(g.root);return a}
 function batchRun(list,force){const ps=(force?list:list.filter(n=>!n.an)).filter(n=>!n.sg);if(!ps.length){toast('解析する手がありません');return}EN.origin=cur;EN.batch=ps.slice();EN.bN=ps.length;EN.bForce=force;EN.off=false;nextB()}
 function batchStop(){EN.batch=null;if(EN.busy){EN.skip=true;EN.yn.postMessage('stop')}if(EN.origin){cur=EN.origin;EN.origin=null}rGame()}
 function batchMenu(){if(!EN.ready){toast('エンジンを起動してください');return}if(EN.batch){batchStop();return}
-sheet([['この局面から：すべて（再解析）',()=>batchFrom(true)],['この局面から：未解析のみ',()=>batchFrom(false)],['この変化：未解析のみ',()=>batchRun(path(),false)],['この変化：すべて（再解析）',()=>batchRun(path(),true)],['全分岐：未解析のみ',()=>batchRun(allNodes(),false)],['全分岐：すべて（再解析）',()=>batchRun(allNodes(),true)]])}
+sheet([['この局面から：すべて（再解析）',()=>batchFrom(true)],['この局面から：未解析のみ',()=>batchFrom(false)],['この変化：未解析のみ',()=>batchRun([g.root,...path()],false)],['この変化：すべて（再解析）',()=>batchRun([g.root,...path()],true)],['全分岐：未解析のみ',()=>batchRun(allNodes(),false)],['全分岐：すべて（再解析）',()=>batchRun(allNodes(),true)]])}
 document.addEventListener('keydown',e=>{if(TR&&TR.on)return;if(view!=='game'||/INPUT|TEXTAREA|SELECT/.test((e.target||{}).tagName||''))return;
 if(PVW){if(e.key==='ArrowLeft')pvStep(-1);else if(e.key==='ArrowRight')pvStep(1);else if(e.key==='Escape')pvEnd();else return;e.preventDefault();return}
 const mv=n=>{if(n){cur=n;sel=null;HOLD=false;rGame()}};
@@ -554,13 +475,13 @@ const my=getSt(cur).side===TR.side&&!TR.done;
 b.innerHTML='<b>手順練習</b>「'+esc(g.title)+'」 あなた：'+(TR.side?'後手':'先手')+'　正解 '+TR.ok+'　間違い '+TR.miss+'<div style="margin:4px 0;font-weight:700;color:'+(TR.done?'#2e7d32':my?'#17808a':'var(--sub)')+'">'+(TR.done?'完了しました':my?'あなたの番です':'相手が指しています…')+'</div><button class="ab" id="trh">ヒント</button><button class="ab" id="trr">やり直し</button><button class="ab" id="trx">終了</button>';
 $('#trh').onclick=()=>{TR.hint=true;rGame()};$('#trr').onclick=()=>trStart(g,TR.side);$('#trx').onclick=trExit}
 $('#ntr').onclick=trPick;
-function batchFrom(force){if(!EN.ready){toast('エンジンを起動してください');return}if(EN.batch){batchStop();return}const ps=path(),i=ps.indexOf(cur);batchRun(i<0?ps:ps.slice(i),force)}
+function batchFrom(force){if(!EN.ready){toast('エンジンを起動してください');return}if(EN.batch){batchStop();return}const ps=path(),i=ps.indexOf(cur);batchRun(i<0?[g.root,...ps]:ps.slice(i),force)}
 function aiDlg(){const o=document.createElement('div');o.className='ov';const s=document.createElement('div');s.className='sh';s.style.cssText='max-height:85vh;overflow:auto';
-s.innerHTML=`<div style="font-weight:700;padding:15px 22px">AI設定</div><div class="st" style="padding:0 12px"><label>探索方式<span><select id="sm"><option value="infinite">無制限</option><option value="movetime">時間(秒)</option><option value="nodes">ノード数</option><option value="depth">深さ</option></select> <input type="number" id="sv" min="1"></span></label><label>スレッド数<input type="number" id="sth" min="1" max="256"></label><label>ハッシュ(MB)<select id="shs">${[16,32,64,128,256,512,1024,2048,4096,8192,16384,32768].map(v=>'<option>'+v+'</option>').join('')}</select></label><label>候補手数(MultiPV)<input type="number" id="smp" min="1" max="5"></label><div style="color:var(--sub);font-size:12px;padding:6px 10px">この端末の論理コア数: ${navigator.hardwareConcurrency||'不明'}。「適用」で反映されます（解析中でも再起動は不要です）。</div></div><div style="padding:8px 22px 0;font-weight:700">評価値の色分け（点の色）</div><div class="st" style="padding:0 12px"><label><span>色をつける</span><input type="checkbox" id="evon"></label><label><span>先手 やや有利／優勢／勝勢</span><span><input type="color" id="evs0"><input type="color" id="evs1"><input type="color" id="evs2"></span></label><label><span>後手 やや有利／優勢／勝勢</span><span><input type="color" id="evg0"><input type="color" id="evg1"><input type="color" id="evg2"></span></label><label><span>互角（±200以内）</span><input type="color" id="evgr"></label><div style="color:var(--sub);font-size:12px;padding:4px 10px">解析済みの手に、グラフ・指し手リスト・ツリーで点が付きます。±200以内は灰色、それを超えると、やや有利→優勢→勝勢の順に色が濃くなります。</div><div id="evr" style="color:var(--sub);padding:6px 10px">色を初期値に戻す</div></div><div class="ok" id="sap">適用</div><div id="srs" style="color:var(--sub)">初期値に戻す</div>`;
-o.append(s);o.onclick=e=>{if(e.target===o)o.remove()};document.body.append(o);stUI();fillEvc();$('#evr').onclick=()=>{Object.assign(EVC,EVC_DEF());saveEVC();fillEvc()};
+s.innerHTML=`<div style="font-weight:700;padding:15px 22px">AI設定</div><div class="st" style="padding:0 12px"><label>探索方式<span><select id="sm"><option value="infinite">無制限</option><option value="movetime">時間(秒)</option><option value="nodes">ノード数</option><option value="depth">深さ</option></select> <input type="number" id="sv" min="1"></span></label><label>スレッド数<input type="number" id="sth" min="1" max="256"></label><label>ハッシュ(MB)<select id="shs">${[16,32,64,128,256,512,1024,2048,4096,8192,16384,32768].map(v=>'<option>'+v+'</option>').join('')}</select></label><label>候補手数(MultiPV)<input type="number" id="smp" min="1" max="5"></label><div style="color:var(--sub);font-size:12px;padding:6px 10px">この端末の論理コア数: ${navigator.hardwareConcurrency||'不明'}。「適用」で反映されます（解析中でも再起動は不要です）。</div></div><div style="padding:8px 22px 0;font-weight:700">評価値の色分け（点の色）</div><div class="st" style="padding:0 12px"><label><span>色をつける</span><input type="checkbox" id="evon"></label><label><span>先手 やや有利／優勢／勝勢</span><span><input type="color" id="evs0"><input type="color" id="evs1"><input type="color" id="evs2"></span></label><label><span>後手 やや有利／優勢／勝勢</span><span><input type="color" id="evg0"><input type="color" id="evg1"><input type="color" id="evg2"></span></label><label><span>互角（±200以内）</span><input type="color" id="evgr"></label><div style="color:var(--sub);font-size:12px;padding:4px 10px">解析済みの手に、グラフ・指し手リスト・ツリーで点が付きます。±200以内は灰色、それを超えると、やや有利→優勢→勝勢の順に色が濃くなります。</div><div id="evr" style="color:var(--sub);padding:6px 10px">色を初期値に戻す</div></div><div style="padding:8px 22px 0;font-weight:700">手の判定（好手・悪手）</div><div class="st" style="padding:0 12px"><label><span>判定を表示</span><input type="checkbox" id="jdon"></label><label><span>疑問手（損失が次以上）</span><input type="number" id="jdq" min="0"></label><label><span>悪手（損失が次以上）</span><input type="number" id="jdb" min="0"></label><label><span>大悪手（損失が次以上）</span><input type="number" id="jdx" min="0"></label><label><span>好手（次善手との差が次以上）</span><input type="number" id="jdg" min="0"></label><div style="color:var(--sub);font-size:12px;padding:4px 10px">損失は、最善手を指した場合と比べた評価値の下がり幅です。前後の局面が解析済みの手だけ判定します。好手は、最善手で、次善手との差が大きいときに付きます（候補手数2以上が必要）。</div></div><div class="ok" id="sap">適用</div><div id="srs" style="color:var(--sub)">初期値に戻す</div>`;
+o.append(s);o.onclick=e=>{if(e.target===o)o.remove()};document.body.append(o);stUI();fillEvc();jdFill();$('#evr').onclick=()=>{Object.assign(EVC,EVC_DEF());saveEVC();fillEvc()};
 $('#sm').onchange=()=>{ST.mode=$('#sm').value;saveST();stUI()};
-$('#sap').onclick=()=>{stRead();readEvc();o.remove();applyOpts();rGame();toast('設定を保存しました')};
-$('#srs').onclick=()=>{Object.assign(ST,DEF());ST.v=2;saveST();stUI();applyOpts()}}
+$('#sap').onclick=()=>{stRead();readEvc();jdRead();o.remove();applyOpts();rGame();toast('設定を保存しました')};
+$('#srs').onclick=()=>{Object.assign(ST,DEF());ST.v=2;saveST();stUI();applyOpts();Object.assign(JD,JD_DEF());saveJD();jdFill()}}
 $('#ai').onclick=aiDlg;
 let RT=null;window.addEventListener('resize',()=>{clearTimeout(RT);RT=setTimeout(()=>{if(view==='game')rGame()},150)});
 function nextB(){if(!EN.batch||!EN.batch.length){EN.batch=null;if(EN.origin){cur=EN.origin;EN.origin=null}rGame();return}const n=EN.batch.shift();if(EN.bForce)delete n.an;cur=n;EN.last=n;sel=null;analyze();rGame()}
@@ -590,9 +511,11 @@ h+='<table class="atb"><colgroup><col style="width:11%"><col style="width:22%"><
 for(let i=1;i<=n;i++){const L=(A.lines&&A.lines[i])||(i===1?{sc:A.sc,pv:A.pv}:null);if(!L){h+=`<tr><td style="color:var(--sub)">${['最善','次善'][i-1]||i}</td><td colspan="4" style="color:var(--sub)">…</td></tr>`;continue}const q=pvJa(st,L.pv||[],10);
 h+=`<tr class="arow" data-i="${i}"><td style="color:${['#e53935','#fb8c00','#1e88e5'][i-1]||'inherit'};font-weight:700">${['最善','次善'][i-1]||i}</td><td>${evS(L.sc,k)}</td><td>${esc(q[0]||'-')}</td><td class="pv" title="${esc(q.slice(1).join(' '))}">${esc(q.slice(1).join(' '))}</td><td><button class="ab ap" data-i="${i}">＋</button></td></tr>`}
 h+='</table>'}
+{const jd=judgeOf(cur);if(jd&&jd.kind){const bl=jd.best&&UR.test(jd.best)&&cur.par?pvJa(getSt(cur.par),[jd.best],1)[0]:'';h+=`<div class="card"><span class="jb ${jd.kind}" style="margin:0 6px 0 0">${JL[jd.kind]}</span>${jd.kind==='good'?'次善の手より評価値が'+jd.gap+'ほど高い手です。':'最善手より評価値が'+jd.loss+'下がりました。'}${bl&&!jd.isBest?' 最善手: <b>'+esc(bl)+'</b> <button class="ab" id="jgo">最善手を見る</button>':''}</div>`}}
+h+=judgeSum();
 if(PVW)h+=`<div class="card">プレビュー中（${PVW.k}/${PVW.pv.length}）<button class="ab" id="pv1">◀</button><button class="ab" id="pv2">▶</button><button class="ab" id="pv3">棋譜に追加</button><button class="ab" id="pv4">終了</button></div>`;
 const sg=sgRoot();if(sg){let c=0;const f=x=>{c++;x.ch.forEach(f)};f(sg);h+=`<div class="card sgc">解析の提案: <b>${esc(sg.lab)}</b> から${c}手の変化（緑色）を棋譜に追加しますか？<br><button class="ab" id="sg1">追加する</button><button class="ab" id="sg2">破棄</button></div>`}
-e.innerHTML=h;
+e.innerHTML=h;{const jg=$('#jgo');if(jg)jg.onclick=()=>{const p=cur.par;if(!p)return;cur=p;sel=null;rGame();pvStart(1)}}
 e.querySelectorAll('.arow').forEach(r=>r.onclick=ev=>{if(ev.target.closest('.ap'))return;pvStart(+r.dataset.i)});
 e.querySelectorAll('.ap').forEach(b=>b.onclick=()=>{const L=(A&&A.lines&&A.lines[b.dataset.i])||(A?{pv:A.pv}:null);if(L&&L.pv&&UR.test(L.pv[0]))addMove(fromUsi(L.pv[0]))});
 if(PVW){$('#pv1').onclick=()=>pvStep(-1);$('#pv2').onclick=()=>pvStep(1);$('#pv3').onclick=pvAdd;$('#pv4').onclick=pvEnd}
@@ -663,4 +586,3 @@ if(t){try{await signInWithCredential(auth,new OAuthProvider('google.com').creden
 }
 </script>
 </body></html>
-
