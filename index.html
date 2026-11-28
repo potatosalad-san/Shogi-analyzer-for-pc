@@ -149,6 +149,107 @@ header h1{font-weight:600;letter-spacing:.04em}
 @media(max-width:819px){
 #game.on #bw{order:0;margin:8px 10px 0}#game.on #ctl{order:1}#game.on #mid{order:2}
 }
+.jb{display:inline-block;font-style:normal;font-size:11px;font-weight:700;border-radius:8px;padding:1px 6px;margin-left:6px;color:#fff;flex:none;line-height:16px}
+.jb.good{background:#1b9a6c}.jb.q{background:#d9a300;color:#222}.jb.bad{background:#e0612b}.jb.big{background:#c62828}
+.tn .jb{position:absolute;top:-8px;left:-4px;margin:0}
+</style><script>
+if(!self.crossOriginIsolated&&'serviceWorker' in navigator&&location.protocol==='https:'){const n=+sessionStorage.getItem('coi')||0,rl=()=>{if(n<3){sessionStorage.setItem('coi',n+1);location.reload()}};
+navigator.serviceWorker.addEventListener('controllerchange',rl);
+navigator.serviceWorker.register('coi-sw.js').then(r=>{r.update();if(r.active&&!navigator.serviceWorker.controller)rl()}).catch(e=>console.warn('SW',e))}
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yuji+Boku&family=Yuji+Mai&family=Yuji+Syuku&family=Zen+Antique&text=%E6%AD%A9%E5%85%B5%E9%A6%99%E8%BB%8A%E6%A1%82%E9%A6%AC%E9%8A%80%E5%B0%87%E9%87%91%E7%8E%8B%E7%8E%89%E9%A3%9B%E8%A7%92%E9%BE%8D%E6%88%90%E3%81%A8%E5%85%A8%E5%9C%AD%E6%9D%8F&display=swap">
+</head><body>
+<header><button class="ib" id="bk" style="display:none">←</button><h1 id="ttl">棋譜ラボ</h1><button class="ib" id="ai" style="font-size:13px;width:auto;padding:0 8px">AI設定</button><button class="ib" id="cs" style="font-size:13px;width:auto;padding:0 8px">☁</button><button class="ib" id="mn">⋮</button></header>
+<main>
+<section class="v on" id="home"><div class="hbar"><div class="pills"><button class="pill on">棋譜</button><button class="pill" id="ntr">練習</button><button class="pill" data-t>設定</button></div><button class="fab" id="fab">＋ 新規</button></div><div id="list"></div></section>
+<section class="v" id="game"><div id="bw"><div class="hand" id="h0"></div><div id="bd"></div><div class="hand" id="h1"></div></div>
+<div id="mid"><div id="ml"></div><div id="rt"><div id="trb" style="display:none"></div><div class="tabs"><div class="a" id="t1">コメント</div></div><textarea id="cm" placeholder="コメントを入力"></textarea><div id="an" style="display:none"><div id="ang"></div><div id="anr"></div><div id="anc"></div></div></div></div>
+<div id="ctl"><button id="b0">«</button><button id="b1">‹</button><button id="b2">›</button><button id="b3">»</button><button id="fl" style="font-size:16px;font-weight:700">反転</button><button id="ba" style="font-size:16px;font-weight:700">解析</button><button id="tb" style="font-size:16px;font-weight:700">分岐</button></div></section>
+<section class="v" id="tree"><div id="tbar"><select id="tfm"><option value="all">すべての手</option><option value="main">本譜のみ</option><option value="sente">先手が優勢（+200超）</option><option value="gote">後手が優勢（-200未満）</option><option value="even">互角（±200以内）</option><option value="win">勝勢（±1200超）</option><option value="good">好手</option><option value="q">疑問手以上</option><option value="bad">悪手以上</option><option value="unan">未解析の手</option><option value="sg">解析の提案（緑）</option><option value="cm">コメントあり</option></select><button class="ab" id="tfx">分岐を全部開く</button><button class="ab" id="tfc">分岐を全部閉じる</button><button class="ab" id="tfh">現在の手へ</button><span id="tfn"></span></div><div id="tr"></div><div class="zb"><button id="zi">＋</button><button id="zo">−</button></div></section>
+</main><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),P={歩:'と',香:'杏',桂:'圭',銀:'全',角:'馬',飛:'龍'},U={};for(const k in P)U[P[k]]=k;
+const LN={と:'と',杏:'成香',圭:'成桂',全:'成銀',馬:'馬',龍:'龍'},RK='一二三四五六七八九',HO='飛角金銀桂香歩';
+let G=[],g=null,cur=null,sel=null,view='home',flip=false,open=null,tab=1;
+try{G=JSON.parse(localStorage.getItem('kifu')||'[]')}catch(e){}
+const rep=(k,v)=>k==='st'||k==='par'||k==='_o'||k==='_tm'?undefined:v;
+let cdb=null,cuid=null;
+function persist(){try{localStorage.setItem('kifu',JSON.strid-area:mid;border-top:0;border-left:1px solid var(--ln);min-height:0}
+#ctl{grid-area:ctl}
+.hp .pc{width:46px;height:52px;font-size:23px}.hand{width:64px}
+}
+/* ---- 解析モード（下のボタンから切替・広く表示） ---- */
+#game.am .tabs{display:none}
+#game.am #bd{max-width:34vh}
+#an{font-size:15px}.pvb{font-size:15px;line-height:1.8}
+#game.am #an{padding:8px 10px}
+@media(min-width:820px) and (min-height:560px) and (orientation:landscape){
+#game.am{grid-template-columns:minmax(0,1fr) max(460px,44vw)}
+#game.am #bd{max-width:none;width:min(calc(100dvh - 150px),calc(100vw - max(460px,44vw) - 110px))}
+}
+@font-face{font-family:'Shoryu';src:url('fonts/shoryu.woff2') format('woff2'),url('fonts/shoryu.ttf') format('truetype'),url('fonts/shoryu.otf') format('opentype');font-display:swap}
+#ens{white-space:pre-wrap;word-break:break-all}
+.eo{display:flex!important;justify-content:space-between;align-items:center;gap:10px;padding:8px 22px!important}.eo span{flex:1;word-break:break-all;font-size:13px}.eo input[type=number],.eo input[type=text],.eo select{width:48%!important;margin:0!important}
+/* ---- 解析モード v2 ---- */
+#bd{position:relative}
+#game.am #bd{max-width:26vh}
+.atb{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}.atb td{padding:5px 6px;border-bottom:1px solid var(--ln);vertical-align:top}.atb tr.arow{cursor:pointer}.atb tr.arow:hover{background:var(--sel)}.atb td.pv{color:var(--sub);word-break:break-all}.ap{padding:2px 8px!important}
+.card{border:2px solid #9fb7bd;border-radius:10px;padding:8px 10px;margin:8px 0;background:var(--card)}.sgc{border-color:#43a047}
+.mv.sg{color:#2e7d32;font-style:italic}.tn.sg{background:#e8f5e9!important;color:#1b5e20!important;border:1px dashed #43a047!important}
+@media(min-width:820px) and (min-height:560px) and (orientation:landscape){
+#game.am{grid-template-columns:max(300px,26vw) minmax(0,1fr)}
+#game.am #bd{max-width:none;width:min(calc(100dvh - 150px),calc(max(300px,26vw) - 100px))}
+}
+/* ---- 解析モード v3 ---- */
+.gt{font-size:11px}
+/* ---- レイアウト v4 ---- */
+#bw{--cs:30px}
+.hand{width:calc(var(--cs)*1.15)}
+.hp{padding:1px 0 1px 2px!important}
+.hp .pc{width:calc(var(--cs)*.92)!important;height:calc(var(--cs)*1.02)!important;font-size:calc(var(--cs)*.4)!important}
+.cnt{font-size:calc(var(--cs)*.4);left:-3px}
+#an{display:flex;flex-direction:column;overflow:auto}
+#ang{order:0;flex:none}#anc{order:1;flex:none}#anr{order:2;flex:none}
+.atb{table-layout:fixed}.atb td.pv{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ah{min-height:44px}
+@media(min-width:820px) and (min-height:560px) and (orientation:landscape){
+#game.am{grid-template-columns:minmax(420px,44vw) minmax(0,1fr)}
+#game.am #bw{max-width:100%;overflow:hidden;align-self:start;margin-top:6px}
+#game.am #bd{max-width:none;width:min(calc(100dvh - 150px),calc((max(420px,44vw) - 24px)*.78))}
+#an{overflow:hidden}
+#anr{flex:1;min-height:0;overflow:auto}
+}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;flex:none}
+.st input[type=color]{width:42px!important;height:30px;padding:0!important;margin:0 3px!important;border:1px solid var(--ln)}
+#bw{position:relative}
+.pc i.one{font-size:1.3em}
+#tbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 10px;border-bottom:1px solid var(--ln);background:var(--card);flex:none}#tbar select{font-size:13px;max-width:100%;padding:4px}#tfn{color:var(--sub);font-size:12px}
+.tn.dim{opacity:.4}.tgl{position:absolute;right:4px;top:50%;margin-top:-9px;min-width:18px;height:18px;line-height:18px;padding:0 4px;text-align:center;border-radius:9px;background:var(--hd);color:var(--hdt);font-size:11px}
+#trb{padding:8px 10px;background:var(--card);border-left:5px solid var(--hd);border-bottom:1px solid var(--ln);font-size:14px;flex:none}
+.sh{max-height:80vh;overflow:auto}
+/* ===== 見た目の刷新: 紺×ティール、カード型一覧、チップ型の指し手リスト ===== */
+:root{--hd:#a8d8dc;--hdt:#1b3f45;--bg:#f6f9f9;--ac:#2b8a93;--bd:#d6ecee;--bt:#a9cfd3;--sel:#e3f1f2;--ln:#e1eaeb;--wood:#a9d3d0;--tray1:#c4e3e0;--tray2:#a3d0cd;--trayl:#a9d3d0;--trayt:#1e4448}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--hd:#33535c;--hdt:#e9f2f3;--bg:#162027;--card:#1f2c33;--ac:#6ccbd3;--bd:#2a4b51;--bt:#44737a;--sel:#2a3a43;--ln:#31404a;--wood:#243842;--tray1:#35525d;--tray2:#24404a;--trayl:#243842;--trayt:#cfe3e6}}
+:root[data-theme="dark"]{--hd:#33535c;--hdt:#e9f2f3;--bg:#162027;--card:#1f2c33;--ac:#6ccbd3;--bd:#2a4b51;--bt:#44737a;--sel:#2a3a43;--ln:#31404a;--wood:#243842;--tray1:#35525d;--tray2:#24404a;--trayl:#243842;--trayt:#cfe3e6}
+header h1{font-weight:600;letter-spacing:.04em}
+.hbar{display:flex;gap:8px;align-items:center;padding:10px 12px;width:100%;max-width:980px;align-self:center;flex:none}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{border:1px solid var(--ln);background:var(--card);color:var(--fg);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer}
+.pill.on{background:var(--hd);color:var(--hdt);border-color:var(--hd)}
+.fab{position:static!important;width:auto;height:auto;margin-left:auto;padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;background:var(--ac);color:#fff;box-shadow:none}
+#list{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;padding:0 12px 24px;align-content:start;max-width:980px}
+.it{border:1px solid var(--ln);border-radius:14px;background:var(--card);padding:12px;gap:12px}
+.it b{font-size:16px}.it small{display:block;margin-top:2px}
+.it .bk{width:40px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--ac);color:#fff;font-weight:700;font-size:18px;clip-path:polygon(50% 0,92% 16%,100% 100%,0 100%,8% 16%)}
+#bw{background:linear-gradient(160deg,var(--tray1),var(--tray2))!important;border-radius:14px}
+#bd{background-color:#ecd9ac}
+#bd .lb{background:var(--trayl)!important;color:var(--trayt)}
+.cnt{color:var(--trayt)!important}
+#ctl{background:var(--card)!important;color:var(--fg)!important;margin:8px 10px;border-radius:14px;border:1px solid var(--ln);overflow:hidden}
+#ctl button{color:var(--fg)!important;height:46px}#ctl button:active{background:var(--sel)}
+@media(max-width:819px){
+#game.on #bw{order:0;margin:8px 10px 0}#game.on #ctl{order:1}#game.on #mid{order:2}
+}
 </style><script>
 if(!self.crossOriginIsolated&&'serviceWorker' in navigator&&location.protocol==='https:'){const n=+sessionStorage.getItem('coi')||0,rl=()=>{if(n<3){sessionStorage.setItem('coi',n+1);location.reload()}};
 navigator.serviceWorker.addEventListener('controllerchange',rl);
