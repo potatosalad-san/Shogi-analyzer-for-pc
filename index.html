@@ -244,7 +244,7 @@ function anTxt(n){const a=n.an,st=getSt(n),k=st.side?-1:1,sc=a.sc,v=sc.mate!=nul
 return '*評価値 '+v+'（深さ'+a.depth+'）'+(a.best&&UR.test(a.best)?' 最善手 '+pvJa(st,[a.best],1)[0]:'')+'\n'+(pv.length?'*読み筋 '+pv.join(' ')+'\n':'')}
 function dl(name,text,type,bom){const b=new Blob([(bom===false?'':'\ufeff')+text],{type:type||'text/plain'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
 function copyTxt(t){const man=()=>dlg('手動でコピーしてください',g.title,1,()=>{},t);navigator.clipboard?navigator.clipboard.writeText(t).then(()=>toast('コピーしました'),man):man()}
-const fname=ext=>g.title.replace(/[\\/:*?"<>|]/g,('_'))+'.'+ext;
+const fname=ext=>g.title.replace(/[\\/:*?"<>|]/g,'_')+'.'+ext;
 function exportMenu(){sheet([['棋譜のみ：コピー',()=>copyTxt(toKif(false))],['棋譜のみ：ファイル保存（.kif）',()=>dl(fname('kif'),toKif(false))],
 ['解析結果つき：コピー（KIFコメント付き）',()=>copyTxt(toKif(true))],['解析結果つき：ファイル保存（.kif）',()=>dl(fname('kif'),toKif(true))],
 ['全データ：ファイル保存（.json／棋譜・分岐・解析）',()=>dl(fname('json'),JSON.stringify({format:'kifu-note',version:1,title:g.title,kind:g.kind,me:g.me,root:g.root},rep),'application/json',false)]])}
@@ -252,6 +252,34 @@ function importText(t,title){t=t.replace(/^\ufeff/,'').trim();let root,ti=title,
 if(t[0]==='{'){const o=JSON.parse(t);if(o.format!=='kifu-note'||!o.root)throw new Error('形式が違います');root=o.root;meta={kind:o.kind,me:o.me};if(!ti||ti==='無題')ti=o.title||ti}else root=parseKif(t);
 const o=mkGame(ti||'無題',root);if(meta){if(meta.kind)o.kind=meta.kind;if(meta.me!=null)o.me=meta.me}openGame(o);save()}
 function importFile(){const i=document.createElement('input');i.type='file';i.accept='.kif,.kifu,.json,.txt';i.onchange=async()=>{const f=i.files[0];if(!f)return;try{importText(await f.text(),f.name.replace(/\.[^.]+$/,''))}catch(e){toast('取り込めません: '+e.message)}};i.click()}
+function saveGame(o){o.t=Date.now();persist();cloudSave(o)}
+function askMe(next){const o=g;sheet([['「'+o.title+'」: あなたの手番は？',()=>{}],['先手（▲）',()=>setMe(o,0,next)],['後手（△）',()=>setMe(o,1,next)]])}
+function setMe(o,me,next){o.kind='practice';o.me=me;saveGame(o);flip=me===1;render();toast('実戦棋譜として登録しました');
+if(next)next();else sheet([['研究棋譜と比べて、初見の変化を取り込みますか？',()=>{}],['比べる',()=>mergePick(o)],['振り返りを見る',()=>reviewDlg()],['あとで',()=>{}]])}
+function practiceAdd(){sheet([['貼り付けで追加',()=>dlg('実戦棋譜の追加','',1,(t,k)=>{try{importText(k||'',t);askMe()}catch(e){toast('取り込めません: '+e.message)}})],['ファイルから追加',pFile]])}
+function pFile(){const i=document.createElement('input');i.type='file';i.accept='.kif,.kifu,.json,.txt';i.onchange=async()=>{const f=i.files[0];if(!f)return;try{importText(await f.text(),f.name.replace(/\.[^.]+$/,''));askMe()}catch(e){toast('取り込めません: '+e.message)}};i.click()}
+function copyTree(n,p){const c={m:{...n.m},lab:n.lab,c:n.c||'',ch:[],par:p};if(n.an)c.an=JSON.parse(JSON.stringify(n.an));n.ch.forEach(k=>{if(!k.sg)c.ch.push(copyTree(k,c))});return c}
+function mergePick(o){if(o.me==null){askMe(()=>mergePick(o));return}const L=G.filter(x=>x!==o&&x.kind!=='practice');if(!L.length){toast('取り込み先の研究棋譜がありません');return}
+sheet([['取り込み先の研究棋譜を選んでください',()=>{}],...L.sort((a,b)=>b.t-a.t).map(b=>[b.title,()=>mergeInto(o,b)])])}
+function mergeInto(o,base){relink(o.root,null);relink(base.root,null);o.root.st=o.root.st||init();base.root.st=base.root.st||init();
+let a=o.root,b=base.root,d=0;for(;;){const n=a.ch.find(c=>!c.sg),k=n&&b.ch.find(c=>c.lab===n.lab);if(!n||!k)break;a=n;b=k;d++}
+const n=a.ch.find(c=>!c.sg);if(!n){toast('研究棋譜の範囲内で終わっています。新しい変化はありません');return}
+const opp=getSt(a).side!==o.me,no=d+1;
+sheet([[no+'手目 '+n.lab+(opp?'：相手の初見の変化です':'：あなたが研究外の手を指しました'),()=>{}],['この手以降を「'+base.title+'」に追加する',()=>{const c=copyTree(n,b);c.nw=true;c.c=(c.c?c.c+'\n':'')+'実戦「'+o.title+'」'+(opp?'で相手が指した初見の変化':'で自分が指した手')+'（'+no+'手目）';b.ch.push(c);saveGame(base);
+sheet([['追加しました',()=>{}],['研究棋譜を開く',()=>{openGame(base);cur=c;rGame()}],['閉じる',()=>{}]])}],['やめる',()=>{}]])}
+function reviewDlg(){const o=g;if(!o||o.me==null){askMe(reviewDlg);return}
+const ml=[];for(let n=o.root.ch.find(c=>!c.sg);n;n=n.ch.find(c=>!c.sg))ml.push(n);
+const S=[0,1].map(()=>({n:0,l:0,c:{good:0,q:0,bad:0,big:0}})),mine=[];let un=0;
+ml.forEach((n,i)=>{const j=judgeOf(n);if(!j){un++;return}const sd=getSt(n.par).side,t=S[sd];t.n++;t.l+=j.loss;if(j.kind)t.c[j.kind]++;if(sd===o.me&&j.kind&&j.kind!=='good')mine.push({n,i,j})});
+const ln=(t,x)=>t+'：判定'+x.n+'手 好手'+x.c.good+'・疑問手'+x.c.q+'・悪手'+x.c.bad+'・大悪手'+x.c.big+' 平均損失'+(x.n?Math.round(x.l/x.n):0);
+const ov=document.createElement('div');ov.className='ov';const sh=document.createElement('div');sh.className='sh';
+let h='<div style="font-weight:700;padding:14px 22px">実戦の振り返り（あなた：'+(o.me?'後手':'先手')+'）</div><div style="padding:0 22px 8px;font-size:13px;color:var(--sub)">'+esc(ln('あなた',S[o.me]))+'<br>'+esc(ln('相手',S[1-o.me]))+(un?'<br>未解析・判定できない手: '+un+'手':'')+'</div>';
+h+=mine.length?mine.map((x,k)=>'<div data-k="'+k+'" style="display:flex;align-items:center;gap:6px"><span style="flex:1">'+(x.i+1)+'. '+esc(x.n.lab)+'</span><em class="jb '+x.j.kind+'" style="margin:0">'+JL[x.j.kind]+'</em><span style="font-size:12px;color:var(--sub)">-'+x.j.loss+'</span></div>').join(''):'<div style="color:var(--sub)">'+(un===ml.length?'まだ解析されていません。下のボタンで全手を解析してください。':'あなたの手に、疑問手・悪手・大悪手はありません。')+'</div>';
+h+='<div id="rvA">未解析の手を解析する</div><div id="rvM">研究棋譜と比べて初見の変化を取り込む</div>';
+sh.innerHTML=h;ov.append(sh);ov.onclick=e=>{if(e.target===ov)ov.remove()};document.body.append(ov);
+sh.querySelectorAll('[data-k]').forEach(d=>d.onclick=()=>{ov.remove();openGame(o);cur=mine[+d.dataset.k].n;tab=1;rGame()});
+$('#rvA').onclick=()=>{ov.remove();if(!EN.ready){toast('解析タブでエンジンを起動してください');return}openGame(o);batchRun([o.root,...ml],false)};
+$('#rvM').onclick=()=>{ov.remove();mergePick(o)}}
 function gMenu(home){if(!g){sheet([['駒の書体を選ぶ',fontMenu]]);return}sheet([['駒の書体を選ぶ',fontMenu],['この棋譜で手順練習',()=>trSide(g)],['実戦の振り返り（ミス一覧）',()=>reviewDlg()],['研究棋譜に取り込む（初見の変化）',()=>mergePick(g)],['自分の手番を設定',()=>askMe()],['名前を変更',()=>dlg('名前を変更',g.title,0,t=>{g.title=t;save();if(!home)$('#ttl').textContent=t;render()})],
 ['書き出し・コピー',exportMenu],
 ['削除',()=>{const d=g;G=G.filter(x=>x!==g);g=null;persist();tomb(d);show('home')},'dg']])}
@@ -372,7 +400,7 @@ const zc=f=>{const r=tr.getBoundingClientRect();zoomTo(Z*f,r.width/2,r.height/2)
 $('#b0').onclick=()=>{if(TR&&TR.on)return;cur=g.root;sel=null;rGame()};$('#b1').onclick=()=>{if(TR&&TR.on)return;if(cur.par){cur=cur.par;sel=null;rGame()}};
 $('#b2').onclick=()=>{if(TR&&TR.on)return;if(cur.ch[0]){cur=cur.ch[0];sel=null;rGame()}};$('#b3').onclick=()=>{if(TR&&TR.on)return;while(cur.ch[0])cur=cur.ch[0];sel=null;rGame()};
 $('#fl').onclick=()=>{flip=!flip;rGame()};$('#tb').onclick=()=>{if(TR&&TR.on){toast('手順練習中は使えません');return}show('tree')};$('#t1').onclick=()=>{tab=1;rGame()};$('#ba').onclick=()=>{if(TR&&TR.on){toast('手順練習中は解析できません');return}tab=tab===2?1:2;rGame()};
-setSt('off');$('#cs').onclick=()=>{if(!cdb){window.fbLogin?window.fbLogin():toast('Firebaseの設定が未入力です')}else sheet([[(window.fbUser||'')+' でログイン中',()=>{}],['今すぐ同期',()=>sync()],['ログアウト',()=>window.fbLogout()]])};
+setSt('off');$('#cs').onclick=()=>{if(!cdb){window.fbLogin?window.fbLogin():toast('Firebaseの設定が未入力です')}else sheet([[(window.fbUser||'')+'-でログイン中',()=>{}],['今すぐ同期',()=>sync()],['ログアウト',()=>window.fbLogout()]])};
 const ENGINE_URLS=['engine/yaneuraou.halfkp.js','engine/yaneuraou.halfkp.noeval.js','engine/yaneuraou.js'];
 const EN={yn:null,ready:false,busy:false,pend:false,last:null,auto:true,ms:3000,src:'内蔵',node:null,log:[],sug:true,off:false};let AN=null;
 const DEF=()=>({mode:'infinite',t:3,n:2000000,d:16,th:1,hash:16,mpv:3});
@@ -431,7 +459,7 @@ const isSg=n=>{for(;n;n=n.par)if(n.sg)return true;return false};
 function suggest(n){if(!EN.sug||!n.an||isSg(n))return;const a=n.an;if(!a.pv||!a.pv.length||!UR.test(a.pv[0]))return;
 let st=getSt(n);try{const lab0=label(st,fromUsi(a.pv[0]));if(n.ch.some(c=>c.lab===lab0))return;let p=n;
 for(const u of a.pv.slice(0,6)){if(!UR.test(u))break;const m=fromUsi(u),lab=label(st,m);st=apply(st,m);const c={m,lab,ch:[],par:p,c:'',sg:true,st};p.ch.push(c);p=c}}catch(e){}}
-function sgRoot(){for(let q=cur;q;q=q.par)if(q.sg&&!(q.par&&q.par.sg))return q;return cur.ch.find(c=>c.sg)||null}
+function sgRoot(){for(let q=cur;q;q=q.par)if(q.sg&&!(q.par&&q.par.sg))return q;return cur.ch.find(c=>!c.sg)||null}
 function sgAccept(r){const f=n=>{delete n.sg;n.ch.forEach(f)};f(r);save();rGame()}
 function sgDrop(r){const p=r.par;p.ch=p.ch.filter(c=>c!==r);for(let q=cur;q;q=q.par)if(q===r){cur=p;break}save();rGame()}
 function allNodes(){const a=[g.root],f=n=>n.ch.forEach(c=>{if(!c.sg){a.push(c);f(c)}});f(g.root);return a}
